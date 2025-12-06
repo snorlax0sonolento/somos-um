@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.2.5) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.2.6) ==========
 (function (global, document) {
   "use strict";
 
@@ -58,7 +58,7 @@
 
   // ========== CLASSE PRINCIPAL ==========
   const JoaoIA = {
-    version: "3.2.5", // Versão atualizada para refletir as correções de timeout
+    version: "3.2.6", // Versão atualizada para refletir as correções de design e API
     config: {},
     isInitialized: false,
     isOpen: false,
@@ -144,7 +144,7 @@
         theme: getDataAttr("theme") || "light",
         position: getDataAttr("position") || "bottom-right",
         avatarUrl: getDataAttr("avatar-url") || this.getDefaultAvatarUrl(),
-        useImgTag: getDataAttr("use-img-tag") === "true" || false,
+        useImgTag: getDataAttr("use-img-tag") !== "false", // FIX: Prioriza IMG por padrão
         ...userConfig,
       };
 
@@ -164,6 +164,7 @@
     },
 
     getDefaultAvatarUrl: function () {
+      // Use um caminho que você espera que funcione para sua imagem PNG
       return "/public/modules/joao-ia/assets/images/joao-avatar.png"; 
     },
 
@@ -176,10 +177,12 @@
 
       let avatarHTML = "";
       if (useImgTag) {
-        avatarHTML = `<img src="${avatarUrl}" class="joao-ia-avatar-img" alt="${this.config.botName}" onerror="this.style.display='none'">`;
-      } else {
-        avatarHTML = `<div class="joao-ia-avatar"></div>`;
-      }
+        // Usa a imagem com fallback em caso de erro no caminho
+        avatarHTML = `<img src="${avatarUrl}" class="joao-ia-avatar-img" alt="${this.config.botName}" onerror="this.style.display='none'; this.closest('.joao-ia-header-left').querySelector('.joao-ia-avatar').style.display='flex'">`;
+      } 
+      // O div é o fallback (invisível por padrão se a imagem for usada)
+      avatarHTML += `<div class="joao-ia-avatar" style="${useImgTag ? 'display: none;' : ''}">J</div>`;
+
 
       container.innerHTML = `
                 <button class="joao-ia-toggle" aria-label="Abrir chat com ${this.config.botName}">
@@ -328,8 +331,6 @@
         this.elements.input.value = "";
         this.elements.input.focus();
       }
-
-      // showTypingIndicator(); // Removido, será substituído pela mensagem persistente
       
       this.processUserMessage(message);
     },

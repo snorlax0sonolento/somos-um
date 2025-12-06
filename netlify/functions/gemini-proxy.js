@@ -1,8 +1,8 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO 4.5: ADIÇÃO DE TIMEOUT E TAG [TIMEOUT] para o frontend.
+// VERSÃO 4.6: CORREÇÃO CRÍTICA DO 'system_instruction' para o formato REST API.
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.5 - Timeout e Fallback) ===");
+    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.6 - API Fix) ===");
     
     // Configurações da API Gemini
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -91,10 +91,11 @@ exports.handler = async (event, context) => {
         const systemInstruction = `Você é o João, um assistente pedagógico especializado no ensino de cultura afro-brasileira e na Lei 10.639/2003. Seja didático, objetivo e forneça exemplos de aplicação em sala de aula (ex: Fundamental I, Fundamental II, Ensino Médio). **Sua resposta deve ser curta e direta, com no máximo 150 palavras, devido a limitações de recursos.**`;
 
         // 2. Montagem do Corpo da Requisição
+        // CORREÇÃO CRÍTICA: systemInstruction deve ser passado dentro do objeto 'config' (camelCase)
         const requestBody = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
-            system_instruction: systemInstruction,
-            generationConfig: { 
+            config: {
+                systemInstruction: systemInstruction,
                 temperature: 0.7 
             }
         };
