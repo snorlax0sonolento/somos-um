@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (CORRIGIDO PARA NETLIFY) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.2.5) ==========
 (function (global, document) {
   "use strict";
 
@@ -58,14 +58,14 @@
 
   // ========== CLASSE PRINCIPAL ==========
   const JoaoIA = {
-    version: "3.2.2", // Versão atualizada para refletir as correções
+    version: "3.2.5", // Versão atualizada para refletir as correções de timeout
     config: {},
     isInitialized: false,
     isOpen: false,
     messages: [],
+    firstInteraction: true,
 
     // BANCO DE DADOS LOCAL EXPANDIDO - PLATAFORMA SOMOS UM
-    // Estas respostas tratam sobre a funcionalidade da plataforma (custo zero de token)
     botResponses: {
       // SAUDAÇÕES
       oi: '### 👋 Olá! Eu sou o **João**, seu assistente virtual!\n\n**Sobre a plataforma "Somos Um - Cultura Afro-Brasileira":**\n\n📚 **Missão:** Congregar artigos científicos consagrados e novas publicações sobre história e cultura afro-brasileira.\n\n🎯 **Objetivo:** Servir como espaço virtual de alta qualidade acadêmica para estudo, promoção e disseminação da Lei 10.639/03.\n\n**Como posso ajudá-lo hoje?**\n- 📖 Informações sobre a plataforma\n- 👨‍🏫 Recursos para educadores\n- 🎓 Materiais para estudantes\n- ⚖️ Conteúdo sobre Lei 10.639/03\n- 📚 Acesso à biblioteca digital',
@@ -109,9 +109,12 @@
       // QUIZ
       quiz: '### 🧠 **QUIZ & TESTES - Módulo Estudante**\n\n**🎯 Objetivo:** Preparação para vestibular e teste de conhecimento\n\n**📝 Características:**\n\n1. **Base em Exames Anteriores**\n   • Perguntas de vestibulares passados\n   • Foco em história e cultura afro-brasileira\n   • Conteúdo alinhado à Lei 10.639/03\n\n2. **Exemplo de Pergunta:**\n   *"Sobre a implementação da Lei 10.639/03, é CORRETO afirmar:"*\n   a) Apenas escolas públicas devem cumprir\n   b) Todas as escolas devem incluir no currículo\n   c) É uma sugestão, não obrigatória\n   d) Aplica-se apenas ao ensino médio\n\n   **Resposta Correta: b)**\n\n3. **Feedback Imediato**\n   • Explicações das respostas\n   • Referências bibliográficas\n   • Sugestões de estudo',
 
-      // RESPOSTA PADRÃO
+      // RESPOSTA PADRÃO (fallback local)
       default:
         "### 🤔 **Vamos explorar juntos?**\n\nParece que sua pergunta ainda não está em meu banco de dados principal. Posso ajudá-lo com:\n\n**📋 TÓPICOS DISPONÍVEIS:**\n\n1. **👨‍🏫 Módulo Educador** - Recursos para professores\n2. **🎓 Módulo Estudante** - Materiais de estudo\n3. **📚 Biblioteca Digital** - Acervo completo\n4. **👥 Módulo Comunidade** - Interação\n5. **⚖️ Lei 10.639/03** - Legislação\n6. **🌐 Plataforma** - Visão geral\n7. **✍️ Autores** - Figuras-chave\n8. **🧠 Quiz** - Testes de conhecimento\n\n**Reformule sua pergunta ou escolha um desses tópicos!**",
+      
+      // Resposta IA local (para não chamar Gemini em "qual seu nome")
+      "ia_response": "Sou João, assistente da plataforma Somos Um. Especializado em educação sobre cultura afro-brasileira.",
     },
 
     // SUGESTÕES INICIAIS
@@ -149,6 +152,10 @@
       this.setupEventListeners();
       this.applyTheme();
       this.loadHistory();
+      
+      if (this.messages.length > 0) {
+        this.firstInteraction = false;
+      }
 
       this.isInitialized = true;
       console.log(
@@ -156,9 +163,7 @@
       );
     },
 
-    // 🚩 CORREÇÃO DO CAMINHO DO AVATAR PARA DEPLOY NO NETLIFY
     getDefaultAvatarUrl: function () {
-      // Caminho absoluto corrigido com base na estrutura de pastas
       return "/public/modules/joao-ia/assets/images/joao-avatar.png"; 
     },
 
@@ -274,7 +279,6 @@
         }
       });
 
-      // Mostrar sugestões ao focar no input
       this.elements.input?.addEventListener("focus", () => {
         if (this.elements.suggestions) {
           this.elements.suggestions.style.display = "flex";
@@ -325,93 +329,84 @@
         this.elements.input.focus();
       }
 
-      const typingIndicator = showTypingIndicator();
-
-      setTimeout(() => {
-        this.processUserMessage(message, typingIndicator);
-      }, 500);
+      // showTypingIndicator(); // Removido, será substituído pela mensagem persistente
+      
+      this.processUserMessage(message);
     },
 
-    // 💡 FUNÇÃO CRITICAMENTE ALTERADA PARA PRIORIZAR O BANCO DE DADOS LOCAL
-    processUserMessage: async function (message, typingIndicator) {
-      hideTypingIndicator();
-
+    // 💡 FUNÇÃO CRITICAMENTE ALTERADA PARA TRATAR O FLUXO DE TIMEOUT/LOADING
+    processUserMessage: async function (message) {
+      
       let response;
+      let shouldCallGemini = false;
 
       // 1. **PRIORIDADE: VERIFICA BANCO DE DADOS LOCAL (CUSTO ZERO)**
-      // O banco de dados local (joao-ia.js) trata de perguntas sobre a PLATAFORMA (Educador, Estudante, etc.).
-      response = this.getLocalResponse(message);
+      const localResponseKey = this.getLocalResponseKey(message);
+      response = this.botResponses[localResponseKey];
       
-      // Se a resposta for o 'default' (ou seja, não achou no local),
-      // enviamos para o backend (que tem o BD Expandido de CONTEÚDO + Gemini).
-      if (response === this.botResponses.default) {
-          try {
-              // Preparar contexto da conversa
-              const conversationContext = this.getConversationContext();
-              let enhancedMessage = message;
-              const lowerMessage = message.toLowerCase();
-
-              if (
-                lowerMessage.includes("outros") ||
-                lowerMessage.includes("além") ||
-                lowerMessage.includes("também") ||
-                lowerMessage.includes("mais")
-              ) {
-                enhancedMessage = this.enhanceContextualQuestion(
-                  message,
-                  conversationContext
-                );
-              }
-
-              // 2. **FALLBACK: CHAMA O BACKEND (BD Expandido + Gemini)**
-              response = await this.sendToBackend(enhancedMessage);
-          } catch (error) {
-              console.error("Erro no backend/Gemini:", error);
-              // Falha total da API/rede. Usa a resposta padrão.
-              response = this.botResponses.default; 
+      // 2. **LÓGICA DE DECISÃO:**
+      if (this.firstInteraction) {
+          if (localResponseKey === 'oi' || localResponseKey === 'ia_response') {
+             this.firstInteraction = false;
+          } else {
+             this.firstInteraction = false;
           }
-      } 
-      // Se achou uma resposta no BD local, a variável 'response' já está populada.
-
-      this.addMessage(response);
+      }
+      
+      if (localResponseKey === 'default' || !this.isPlatformTopic(localResponseKey)) {
+          shouldCallGemini = true;
+      }
+      
+      if (shouldCallGemini) {
+          
+          // NOVO: Mostra um indicador de loading persistente (Mensagem de "Pensando demais")
+          const loadingMessage = this.addMessage("... Aguardando resposta de João IA (pode levar alguns segundos) ...", false, true); 
+          
+          try {
+              console.log("🌟 Acionando Gemini (BD Externo/IA) para: " + message);
+              
+              // 3. **CHAMA O BACKEND (NETLIFY FUNCTION -> GEMINI)**
+              response = await this.sendToBackend(message);
+              
+          } catch (error) {
+              console.error("Erro de rede/frontend:", error);
+              
+              // Fallback para erro de conexão/rede (lado do cliente)
+              response = "Desculpe, houve um erro de conexão. Por favor, tente novamente ou confira sua conexão com a internet.";
+              
+          } finally {
+              // Remove ou atualiza a mensagem de "pensando"
+              if (loadingMessage && loadingMessage.parentNode) {
+                  
+                  // 4. TRATAMENTO ESPECÍFICO DE TIMEOUT DO BACKEND
+                  if (response.includes("[TIMEOUT]")) {
+                      // Remove a tag e atualiza o conteúdo da mensagem de loading para a mensagem de erro formatada
+                      const timeoutText = response.replace("[TIMEOUT]", "");
+                      loadingMessage.querySelector('.joao-ia-message-content').innerHTML = this.convertMarkdown(`### ⏱️ Tempo Esgotado\n\n**João demorou demais para responder.** Por favor, tente reformular sua pergunta ou utilize os comandos dos módulos (👨‍🏫 Educador, 📚 Biblioteca) para obter uma resposta rápida.\n\nDetalhes do Erro: ${timeoutText.trim()}`);
+                      loadingMessage.classList.remove('joao-ia-loading-message'); // Remove o estilo de "loading"
+                      // Não salva no histórico, pois é um erro de sistema
+                  } else {
+                      // Se for resposta normal ou outro erro do fetch, removemos a mensagem de loading e adicionamos a resposta
+                      loadingMessage.remove(); 
+                      this.addMessage(response);
+                  }
+              } else {
+                  // Se o elemento foi removido por outro motivo, apenas adicionamos a resposta
+                  this.addMessage(response);
+              }
+          }
+      } else {
+          // Se for resposta local (BD Rápido), adiciona a resposta instantaneamente
+          this.addMessage(response);
+      }
 
       // Mostrar sugestões relacionadas após resposta
       this.showRelatedSuggestions(message);
     },
 
-    // Nova função para melhorar perguntas contextuais
-    enhanceContextualQuestion: function (question, context) {
-      // Analisar as últimas mensagens para contexto
-      const lastMessages = this.messages.slice(-4); // Últimas 4 mensagens
-
-      for (let i = lastMessages.length - 1; i >= 0; i--) {
-        const msg = lastMessages[i];
-        if (!msg.isUser) {
-          // Se a última resposta do bot mencionou algum tópico
-          if (msg.text.toLowerCase().includes("zumbi")) {
-            return `Continuando sobre história afro-brasileira, ${question}`;
-          } else if (msg.text.toLowerCase().includes("lei")) {
-            return `Sobre legislação educacional, ${question}`;
-          }
-        }
-      }
-
-      return question;
-    },
-
-    getConversationContext: function () {
-      // Retorna contexto da conversa atual
-      const recentMessages = this.messages.slice(-3);
-      return recentMessages.map((m) => ({
-        role: m.isUser ? "user" : "assistant",
-        content: m.text,
-      }));
-    },
-
     sendToBackend: async function (userMessage) {
       console.log("🔄 Enviando para IA:", userMessage);
 
-      // 🚨 AGORA USANDO O ENDPOINT RELATIVO DO NETLIFY
       const functionUrl = REQUEST_ENDPOINT;
 
       const payload = JSON.stringify({ prompt: userMessage });
@@ -426,6 +421,7 @@
           body: payload,
           mode: "cors",
           credentials: "same-origin",
+          // Não precisamos de timeout no cliente, o backend cuida disso.
         });
 
         console.log("📥 Status:", response.status, response.statusText);
@@ -440,12 +436,14 @@
           data.resposta?.length || 0
         );
 
-        // Verificar se a resposta está completa
         if (data.status === "success" && data.resposta) {
-          // Garantir que a resposta seja uma string
           let resposta = String(data.resposta);
 
-          // Se a resposta terminar abruptamente, adicionar "..." (Útil com maxOutputTokens)
+          // Se for uma resposta com timeout do BACKEND, retornamos a string bruta com a tag
+          if (resposta.includes("[TIMEOUT]")) {
+             return resposta;
+          }
+          
           if (resposta.length > 0 && !/[.!?]\s*$/.test(resposta.trim())) {
             console.log(
               "⚠️ Resposta pode estar incompleta, adicionando indicador..."
@@ -463,18 +461,32 @@
         }
       } catch (error) {
         console.error("❌ Erro no fetch/API:", error);
-        // Lança o erro para processUserMessage, que fará o fallback final.
+        // Lança o erro para processUserMessage, que fará o fallback final (de rede)
         throw error; 
       }
     },
 
-    getLocalResponse: function (message) {
+    isPlatformTopic: function(key) {
+        const platformKeys = [
+            "educador", "estudante", "biblioteca", "comunidade", 
+            "lei 10.639", "plataforma", "missão", "autores", "quiz", "ajuda", 
+            "oi", "ia_response"
+        ];
+        return platformKeys.includes(key);
+    },
+
+    getLocalResponseKey: function (message) {
       const lower = message.toLowerCase();
 
       // Mapeamento de palavras-chave para respostas
       const keywordMap = {
+        "qual seu nome": "ia_response",
+        "quem é você": "ia_response",
+        joao: "ia_response",
+        
+        // BD Local explícito (sobre a plataforma)
         lei: "lei 10.639",
-        10.639: "lei 10.639",
+        "10.639": "lei 10.639",
         educador: "educador",
         professor: "educador",
         professora: "educador",
@@ -507,6 +519,8 @@
         ajuda: "ajuda",
         help: "ajuda",
         socorro: "ajuda",
+        
+        // Saudações
         oi: "oi",
         olá: "oi",
         ola: "oi",
@@ -515,15 +529,13 @@
         "boa noite": "oi",
       };
 
-      // Verificar cada palavra-chave
       for (const [keyword, responseKey] of Object.entries(keywordMap)) {
         if (lower.includes(keyword)) {
-          return this.botResponses[responseKey] || this.botResponses.default;
+          return responseKey;
         }
       }
 
-      // Resposta padrão
-      return this.botResponses.default;
+      return "default";
     },
 
     showRelatedSuggestions: function (userMessage) {
@@ -605,33 +617,34 @@
       });
     },
 
-    // 🚩 MÉTODO ADD MESSAGE INSERIDO PARA CORRIGIR 'Uncaught TypeError: this.addMessage is not a function'
-    addMessage: function (text, isUser = false) {
+    // MENSAGEM COM NOVO PARÂMETRO isLoading
+    addMessage: function (text, isUser = false, isLoading = false) {
       if (!this.elements.messages || !text) return;
 
       const messageElement = document.createElement('div');
-      messageElement.className = `joao-ia-message ${isUser ? 'joao-ia-user' : 'joao-ia-bot'}`;
+      messageElement.className = `joao-ia-message ${isUser ? 'joao-ia-user' : 'joao-ia-bot'} ${isLoading ? 'joao-ia-loading-message' : ''}`;
 
       const content = document.createElement('div');
       content.className = 'joao-ia-message-content';
 
-      // Converte Markdown para mensagens do bot
-      content.innerHTML = isUser ? text : convertMarkdown(text); // Usa a função auxiliar global
+      content.innerHTML = isUser ? text : convertMarkdown(text); 
 
       messageElement.appendChild(content);
       this.elements.messages.appendChild(messageElement);
 
-      this.messages.push({ text: text, isUser: isUser, timestamp: new Date().toISOString() });
+      if (!isLoading) {
+          this.messages.push({ text: text, isUser: isUser, timestamp: new Date().toISOString() });
 
-      // Limita o histórico
-      if (this.messages.length > this.config.maxHistory) {
-        this.messages.shift(); // Remove a mensagem mais antiga do array
+          if (this.messages.length > this.config.maxHistory) {
+              this.messages.shift();
+          }
+
+          this.saveHistory();
       }
-
-      this.saveHistory();
+      
       this.scrollToBottom();
+      return messageElement;
     },
-    // FIM DA CORREÇÃO ADD MESSAGE
 
     applyTheme: function () {
       if (!this.elements.container) return;
@@ -644,7 +657,6 @@
         `joao-ia-theme-${this.config.theme}`
       );
 
-      // Atualizar ícone do botão de tema
       if (this.elements.themeToggle) {
         const icon = this.elements.themeToggle.querySelector("i");
         if (icon) {
@@ -684,8 +696,9 @@
           const data = JSON.parse(saved);
           this.messages = data.messages || [];
 
+          // Adiciona mensagens pulando mensagens de loading que não devem estar no histórico
           this.messages.forEach((msg) => {
-            this.addMessage(msg.text, msg.isUser);
+             this.addMessage(msg.text, msg.isUser, false);
           });
 
           this.scrollToBottom();

@@ -1,710 +1,386 @@
 /* ========== MÓDULO JOÃO IA - DESIGN MODERNO ========== */
 :root {
-  --joao-primary: #a55734;
+  --joao-primary: #a55734; /* Terracota/Vermelho Queimado */
   --joao-primary-dark: #8c472a;
   --joao-secondary: #3498db;
   --joao-accent: #ff6b35;
   --joao-gold: #ffd700;
 
+  /* Temas Claro */
   --joao-bg-light: #ffffff;
   --joao-surface-light: rgba(255, 255, 255, 0.9);
-  --joao-text-light: #2c3e50;
+  --joao-text-light: #2c3e50; /* Texto Escuro */
   --joao-border-light: rgba(0, 0, 0, 0.1);
 
+  /* Temas Escuro */
   --joao-bg-dark: #0f172a;
   --joao-surface-dark: rgba(30, 41, 59, 0.9);
-  --joao-text-dark: #f1f5f9;
+  --joao-text-dark: #f1f5f9; /* Cor do Texto Branco/Claro */
   --joao-border-dark: rgba(255, 255, 255, 0.1);
 
   --joao-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   --joao-border-radius: 24px;
   --joao-border-radius-sm: 16px;
   --joao-border-radius-lg: 32px;
-
-  --joao-glow: 0 0 40px rgba(165, 87, 52, 0.3);
-  --joao-glow-hover: 0 0 60px rgba(165, 87, 52, 0.5);
-
-  --joao-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
 }
 
-/* ========== CONTAINER PRINCIPAL ========== */
+/* Base */
 .joao-ia-container {
+  font-family: 'Inter', sans-serif;
   position: fixed;
+  z-index: 9999;
   bottom: 40px;
   right: 40px;
-  z-index: 10000;
-  font-family: var(--joao-font-family);
-  font-size: 16px;
-  line-height: 1.6;
 }
 
-/* ========== TOGGLE BUTTON - SOMENTE FOTO DO JOÃO ========== */
+/* Alternador (Botão de Abrir/Fechar) */
 .joao-ia-toggle {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--joao-primary); /* Fundo marrom */
-  color: white;
+  background-color: var(--joao-primary);
+  color: var(--joao-bg-light);
+  width: 60px;
+  height: 60px;
   border: none;
+  border-radius: 50%;
   cursor: pointer;
-  box-shadow: var(--joao-shadow), var(--joao-glow);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   display: flex;
-  justify-content: center;
   align-items: center;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  animation: float 6s ease-in-out infinite;
-  overflow: hidden;
-  padding: 0;
-  background-image: url("./assets/images/joao-avatar.png"),
-    url("../assets/images/joao-avatar.png"),
-    url("../../assets/images/joao-avatar.png"),
-    url("/modules/joao-ia/assets/images/joao-avatar.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* Remove todos os ícones do botão */
-.joao-ia-toggle i,
-.joao-ia-toggle::before,
-.joao-ia-toggle::after {
-  display: none !important;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
 }
 
 .joao-ia-toggle:hover {
-  transform: scale(1.15) translateY(-5px);
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25), var(--joao-glow-hover);
   background-color: var(--joao-primary-dark);
 }
 
-.joao-ia-toggle.active {
-  transform: rotate(180deg) scale(1.1);
+.joao-ia-toggle::before {
+  content: '\f075'; /* Ícone de chat (comment) */
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.joao-ia-toggle.active::before {
+  content: '\f00d'; /* Ícone X (times) */
 }
 
-/* ========== WINDOW - GLASS EFFECT ========== */
+/* Janela do Chat */
 .joao-ia-window {
-  position: absolute;
-  bottom: 100px;
-  right: 0;
-  width: 450px;
-  max-width: 90vw;
-  height: 600px;
-  max-height: 80vh;
-  background: var(--joao-surface-light);
-  border-radius: var(--joao-border-radius-lg);
-  box-shadow: var(--joao-shadow), inset 1px 1px 0px rgba(255, 255, 255, 0.5),
-    inset -1px -1px 0px rgba(0, 0, 0, 0.05);
   display: none;
   flex-direction: column;
+  width: 380px;
+  height: 550px;
+  max-height: 80vh;
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  background-color: var(--joao-surface-light);
+  border-radius: var(--joao-border-radius);
+  box-shadow: var(--joao-shadow);
   overflow: hidden;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-origin: bottom right;
+  transition: all 0.3s ease;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+/* Estilos de Tema (Aplicados ao Container) */
+.joao-ia-theme-light .joao-ia-window {
+  background-color: var(--joao-surface-light);
+  color: var(--joao-text-light);
 }
 
-/* ========== THEME DARK ========== */
 .joao-ia-theme-dark .joao-ia-window {
-  background: var(--joao-surface-dark);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--joao-shadow), inset 1px 1px 0px rgba(255, 255, 255, 0.05),
-    inset -1px -1px 0px rgba(0, 0, 0, 0.2);
+  background-color: var(--joao-surface-dark);
+  color: var(--joao-text-dark); /* Cor do Texto Branco/Claro */
 }
 
-/* ========== HEADER ========== */
+.joao-ia-theme-dark .joao-ia-header,
+.joao-ia-theme-dark .joao-ia-input-area {
+  background-color: var(--joao-surface-dark);
+  border-color: var(--joao-border-dark);
+}
+
+.joao-ia-theme-dark .joao-ia-input {
+  background-color: var(--joao-surface-dark);
+  color: var(--joao-text-dark);
+  border-color: var(--joao-border-dark);
+}
+
+/* Cabeçalho */
 .joao-ia-header {
-  background: linear-gradient(
-    135deg,
-    var(--joao-primary),
-    var(--joao-primary-dark)
-  );
-  color: white;
-  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--joao-bg-light);
+  border-bottom: 1px solid var(--joao-border-light);
+  flex-shrink: 0;
+}
+
+.joao-ia-header-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
+  gap: 10px;
 }
 
 .joao-ia-header h3 {
   margin: 0;
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 1.1rem;
 }
 
-/* ========== AVATAR DESIGN - COM FOTO ========== */
-.joao-ia-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 15px;
-  flex-shrink: 0;
-  background-size: cover;
-  background-position: center;
-  border: 3px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  background-image: url("./assets/images/joao-avatar.png"),
-    url("../assets/images/joao-avatar.png"),
-    url("../../assets/images/joao-avatar.png"),
-    url("/modules/joao-ia/assets/images/joao-avatar.png");
-}
-
-.joao-ia-avatar-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 15px;
-  border: 3px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  flex-shrink: 0;
-}
-
-/* ========== HEADER BUTTONS ========== */
-.joao-ia-header-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.joao-ia-header-btn {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+.joao-ia-header-controls .joao-ia-header-btn {
+  background: none;
+  border: none;
+  color: var(--joao-text-light);
   cursor: pointer;
+  font-size: 1.1rem;
+  margin-left: 10px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.joao-ia-theme-dark .joao-ia-header-controls .joao-ia-header-btn {
+  color: var(--joao-text-dark);
+}
+
+.joao-ia-header-controls .joao-ia-header-btn:hover {
+  opacity: 1;
+}
+
+/* Avatar */
+.joao-ia-avatar, .joao-ia-avatar-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: var(--joao-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  object-fit: cover;
   flex-shrink: 0;
 }
 
-.joao-ia-header-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* ========== MESSAGES CONTAINER ========== */
+/* Mensagens */
 .joao-ia-messages {
-  flex: 1;
-  padding: 20px;
+  flex-grow: 1;
+  padding: 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  background: linear-gradient(
-    180deg,
-    rgba(248, 249, 250, 0.9) 0%,
-    rgba(255, 255, 255, 0.7) 100%
-  );
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  min-height: 0; /* Permite que o contêiner encolha */
 }
 
-.joao-ia-theme-dark .joao-ia-messages {
-  background: linear-gradient(
-    180deg,
-    rgba(30, 41, 59, 0.9) 0%,
-    rgba(15, 23, 42, 0.7) 100%
-  );
-}
-
-/* ========== MESSAGES STYLES ========== */
+/* Estilo para cada balão de mensagem */
 .joao-ia-message {
-  max-width: 85%;
-  padding: 18px 22px;
-  border-radius: var(--joao-border-radius);
-  font-size: 1rem;
-  line-height: 1.7;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 18px;
+  max-width: 80%;
+  line-height: 1.4;
   word-wrap: break-word;
-  position: relative;
-  animation: messageAppear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  font-size: 0.9rem;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
-@keyframes messageAppear {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Bot Message */
-.joao-ia-bot-message {
-  align-self: flex-start;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(248, 249, 250, 0.95) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.8);
+/* NOVO: Estilo para mensagem de loading/erro (indicador de pensamento) */
+.joao-ia-loading-message {
+  opacity: 0.7;
+  font-style: italic;
+  font-size: 0.85rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px dashed var(--joao-primary);
   color: var(--joao-text-light);
-  border-top-left-radius: 4px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
-.joao-ia-bot-message::before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  top: 20px;
-  width: 0;
-  height: 0;
-  border: 8px solid transparent;
-  border-right-color: rgba(255, 255, 255, 0.95);
-}
-
-.joao-ia-theme-dark .joao-ia-bot-message {
-  background: linear-gradient(
-    135deg,
-    rgba(30, 41, 59, 0.95) 0%,
-    rgba(15, 23, 42, 0.95) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.joao-ia-theme-dark .joao-ia-loading-message {
+  background-color: rgba(30, 41, 59, 0.9);
+  border: 1px dashed var(--joao-primary);
   color: var(--joao-text-dark);
 }
 
-/* User Message */
-.joao-ia-user-message {
-  align-self: flex-end;
-  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
-  color: white;
-  border-top-right-radius: 4px;
-  box-shadow: 0 4px 25px rgba(165, 87, 52, 0.3);
-}
 
-/* ========== MARKDOWN STYLES ========== */
-.joao-ia-bot-message h1,
-.joao-ia-bot-message h2,
-.joao-ia-bot-message h3,
-.joao-ia-bot-message h4 {
-  margin: 1em 0 0.5em 0;
-  font-weight: 700;
-  color: var(--joao-primary);
-}
-
-.joao-ia-bot-message h1 {
-  font-size: 1.4rem;
-}
-.joao-ia-bot-message h2 {
-  font-size: 1.3rem;
-}
-.joao-ia-bot-message h3 {
-  font-size: 1.2rem;
-}
-.joao-ia-bot-message h4 {
-  font-size: 1.1rem;
-}
-
-.joao-ia-bot-message strong {
-  font-weight: 700;
-  color: var(--joao-primary-dark);
-}
-
-.joao-ia-bot-message em {
-  font-style: italic;
+/* Estilo BALÃO - BOT (Esquerda) */
+.joao-ia-bot {
+  align-self: flex-start;
+  background-color: var(--joao-bg-light);
   color: var(--joao-text-light);
+  border-bottom-left-radius: 4px;
 }
 
-.joao-ia-bot-message a {
-  color: var(--joao-secondary);
-  text-decoration: none;
-  border-bottom: 1px dashed var(--joao-secondary);
-  transition: all 0.2s ease;
+.joao-ia-theme-dark .joao-ia-bot {
+  background-color: var(--joao-surface-dark); /* Cor de fundo mais escura para o balão do bot */
+  color: var(--joao-text-dark);
+  border: 1px solid var(--joao-border-dark);
 }
 
-.joao-ia-bot-message a:hover {
-  border-bottom: 1px solid var(--joao-secondary);
+/* Estilo BALÃO - USUÁRIO (Direita, WhatsApp-like) */
+.joao-ia-user {
+  align-self: flex-end;
+  background-color: var(--joao-primary); /* Cor Laranja/Terracota */
+  color: white;
+  border-bottom-right-radius: 4px;
 }
 
-.joao-ia-bot-message ul,
-.joao-ia-bot-message ol {
-  margin: 0.5em 0;
-  padding-left: 1.5em;
+.joao-ia-message-content h3 {
+  font-size: 1rem;
+  margin-top: 0.5rem;
 }
-
-.joao-ia-bot-message li {
-  margin: 0.3em 0;
+.joao-ia-message-content strong,
+.joao-ia-message-content em {
+  line-height: inherit; /* Garante que bold e itálico não quebrem a linha */
 }
-
-.joao-ia-bot-message code {
-  background: rgba(165, 87, 52, 0.1);
-  padding: 2px 6px;
+.joao-ia-message-content ul,
+.joao-ia-message-content ol {
+  margin-left: 1.2rem;
+  padding-left: 0;
+  list-style-type: disc;
+}
+.joao-ia-message-content code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 4px;
   border-radius: 4px;
-  font-family: "Courier New", monospace;
-  font-size: 0.9em;
+}
+.joao-ia-user .joao-ia-message-content code {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* ========== SUGGESTIONS - REDESIGNED ========== */
+/* Sugestões (Chips) */
 .joao-ia-suggestions {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 10px;
-  padding: 15px 20px;
-  border-top: 1px solid var(--joao-border-light);
-  background: var(--joao-surface-light);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   flex-shrink: 0;
-  max-height: 70px;
-  min-height: 70px;
-  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 15px;
+  min-height: 40px;
+  background-color: var(--joao-surface-light);
+  border-top: 1px solid var(--joao-border-light);
 }
 
 .joao-ia-theme-dark .joao-ia-suggestions {
-  background: var(--joao-surface-dark);
-  border-top: 1px solid var(--joao-border-dark);
+  background-color: var(--joao-surface-dark);
+  border-color: var(--joao-border-dark);
 }
 
 .joao-ia-suggestion-chip {
-  padding: 10px 18px;
-  border-radius: 50px;
-  background: rgba(165, 87, 52, 0.1);
-  border: 2px solid transparent;
-  color: var(--joao-primary);
+  background-color: var(--joao-gold);
+  color: var(--joao-text-light);
+  border: none;
+  border-radius: 12px;
+  padding: 6px 12px;
   cursor: pointer;
   font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  white-space: nowrap;
-  flex-shrink: 0;
+  transition: background-color 0.2s;
 }
 
 .joao-ia-suggestion-chip:hover {
-  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(165, 87, 52, 0.3);
-  border-color: var(--joao-primary);
+  background-color: var(--joao-accent);
 }
 
-/* Esconder scrollbar mas manter funcionalidade */
-.joao-ia-suggestions::-webkit-scrollbar {
-  height: 4px;
-}
-
-.joao-ia-suggestions::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 2px;
-}
-
-.joao-ia-suggestions::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
-  border-radius: 2px;
-}
-
-/* ========== INPUT AREA ========== */
+/* Área de Input */
 .joao-ia-input-area {
   display: flex;
-  padding: 20px;
+  padding: 10px 15px;
   border-top: 1px solid var(--joao-border-light);
-  background: var(--joao-surface-light);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  gap: 15px;
-  align-items: center;
   flex-shrink: 0;
+  background-color: var(--joao-bg-light);
 }
 
-.joao-ia-theme-dark .joao-ia-input-area {
-  background: var(--joao-surface-dark);
-  border-top: 1px solid var(--joao-border-dark);
-}
-
-/* Input Field */
 .joao-ia-input {
-  flex: 1;
-  padding: 16px 24px;
-  border: 2px solid transparent;
-  border-radius: 50px;
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: 1px solid var(--joao-border-light);
+  border-radius: 20px;
+  margin-right: 10px;
+  font-size: 0.95rem;
   outline: none;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--joao-text-light);
-  font-weight: 500;
-  font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  transition: border-color 0.2s;
 }
 
 .joao-ia-input:focus {
-  background: rgba(255, 255, 255, 1);
-  border-color: var(--joao-primary);
-  box-shadow: 0 8px 30px rgba(165, 87, 52, 0.2);
-  transform: translateY(-2px);
-}
-
-.joao-ia-theme-dark .joao-ia-input {
-  background: rgba(30, 41, 59, 0.9);
-  color: var(--joao-text-dark);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.joao-ia-theme-dark .joao-ia-input:focus {
-  background: rgba(30, 41, 59, 1);
   border-color: var(--joao-primary);
 }
 
-/* Send Button */
 .joao-ia-send {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
-  border: none;
+  background-color: var(--joao-primary);
   color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 25px rgba(165, 87, 52, 0.3);
-  flex-shrink: 0;
+  font-size: 1.1rem;
+  transition: background-color 0.2s;
 }
 
 .joao-ia-send:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 35px rgba(165, 87, 52, 0.4);
+  background-color: var(--joao-primary-dark);
 }
 
-/* ========== TYPING INDICATOR ========== */
+/* Indicador de Digitação (Temporário) */
 .joao-ia-typing {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: var(--joao-border-radius);
-  margin: 10px 0;
-  width: fit-content;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  align-self: flex-start;
+  gap: 4px;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 18px;
+  max-width: 80%;
+  background-color: var(--joao-bg-light);
+  border-bottom-left-radius: 4px;
 }
-
 .joao-ia-theme-dark .joao-ia-typing {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--joao-surface-dark);
 }
 
 .joao-ia-typing-dot {
-  width: 10px;
-  height: 10px;
-  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
+  width: 8px;
+  height: 8px;
+  background-color: var(--joao-primary);
   border-radius: 50%;
-  animation: typingBounce 1.4s infinite ease-in-out both;
+  animation: bounce 1.4s infinite ease-in-out both;
 }
 
-.joao-ia-typing-dot:nth-child(1) {
+.joao-ia-typing-dot:nth-child(2) {
   animation-delay: -0.32s;
 }
-.joao-ia-typing-dot:nth-child(2) {
+
+.joao-ia-typing-dot:nth-child(3) {
   animation-delay: -0.16s;
 }
-.joao-ia-typing-dot:nth-child(3) {
-  animation-delay: 0s;
-}
 
-@keyframes typingBounce {
-  0%,
-  80%,
-  100% {
-    transform: scale(0.8);
-    opacity: 0.5;
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
   }
   40% {
-    transform: scale(1.2);
-    opacity: 1;
+    transform: scale(1);
   }
 }
 
-/* ========== SCROLLBAR ========== */
-.joao-ia-messages::-webkit-scrollbar {
-  width: 8px;
-}
-
-.joao-ia-messages::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-}
-
-.joao-ia-messages::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
-  border-radius: 4px;
-}
-
-/* ========== HEADER LEFT ========== */
-.joao-ia-header-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-/* ========== TIMESTAMP ========== */
-.joao-ia-timestamp {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  margin-top: 8px;
-  text-align: right;
-}
-
-.joao-ia-bot-message .joao-ia-timestamp {
-  text-align: left;
-}
-
-/* ========== RESPONSIVENESS ========== */
-@media (max-width: 768px) {
+/* Responsividade */
+@media (max-width: 600px) {
   .joao-ia-container {
     bottom: 20px;
     right: 20px;
-    left: 20px;
   }
 
   .joao-ia-window {
-    width: calc(100vw - 40px);
-    height: 70vh;
-    max-height: none;
-    right: 0;
-    left: 0;
+    width: 90vw;
+    height: 75vh;
+    max-width: 400px;
+    bottom: 80px;
+    right: 5px;
+    left: 5px;
     margin: 0 auto;
-    bottom: 90px;
-  }
-
-  .joao-ia-toggle {
-    width: 65px;
-    height: 65px;
-  }
-
-  .joao-ia-header h3 {
-    font-size: 1.2rem;
-  }
-
-  .joao-ia-avatar,
-  .joao-ia-avatar-img {
-    width: 40px;
-    height: 40px;
-  }
-
-  .joao-ia-message {
-    max-width: 90%;
-    padding: 15px 18px;
-    font-size: 0.95rem;
-  }
-
-  .joao-ia-suggestions {
-    padding: 12px 15px;
-    max-height: 60px;
-    min-height: 60px;
-  }
-
-  .joao-ia-suggestion-chip {
-    padding: 8px 15px;
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .joao-ia-window {
-    height: 85vh;
-    bottom: 85px;
-    border-radius: var(--joao-border-radius);
   }
 
   .joao-ia-toggle {
     width: 55px;
     height: 55px;
+    font-size: 1.3rem;
   }
 
-  .joao-ia-input-area {
-    padding: 15px;
-  }
-
-  .joao-ia-input {
-    padding: 14px 20px;
-    font-size: 0.95rem;
-  }
-
-  .joao-ia-send {
-    width: 45px;
-    height: 45px;
-  }
-
-  .joao-ia-suggestion-chip {
-    padding: 7px 14px;
-    font-size: 0.75rem;
-  }
-
-  .joao-ia-suggestions {
-    padding: 10px 15px;
-    max-height: 55px;
-    min-height: 55px;
-  }
-
-  .joao-ia-bot-message {
-    white-space: pre-wrap; /* Preserva quebras de linha */
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    max-width: 100%;
-  }
-
-  .joao-ia-message {
-    line-height: 1.5;
-    font-size: 14px;
-  }
-
-  .joao-ia-messages {
-    overflow-y: auto;
-    max-height: 400px;
+  .joao-ia-header h3 {
+    font-size: 1rem;
   }
 }
