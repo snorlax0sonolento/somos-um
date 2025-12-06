@@ -1,10 +1,10 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (CORRIGIDO PARA VERCEL) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (CORRIGIDO PARA NETLIFY) ==========
 (function (global, document) {
   "use strict";
 
-  // ========== CONFIGURAÇÕES GLOBAIS - ATUALIZADO PARA VERCEL (CORREÇÃO 404) ==========
-  const VERCEL_BASE_URL = "https://somos-um-black.vercel.app"; 
-  const REQUEST_ENDPOINT = VERCEL_BASE_URL + "/api/gemini-proxy";
+  // ========== CONFIGURAÇÕES GLOBAIS - ATUALIZADO PARA NETLIFY ==========
+  // O endpoint do Netlify é relativo à raiz do site, assumindo a função em netlify/functions/gemini-proxy.js
+  const REQUEST_ENDPOINT = "/.netlify/functions/gemini-proxy";
   const REQUEST_TIMEOUT = 15001;
 
   // ========== FUNÇÕES AUXILIARES ==========
@@ -58,7 +58,7 @@
 
   // ========== CLASSE PRINCIPAL ==========
   const JoaoIA = {
-    version: "3.2.1", // Versão atualizada para refletir a correção
+    version: "3.2.2", // Versão atualizada para refletir as correções
     config: {},
     isInitialized: false,
     isOpen: false,
@@ -156,8 +156,10 @@
       );
     },
 
+    // 🚩 CORREÇÃO DO CAMINHO DO AVATAR PARA DEPLOY NO NETLIFY
     getDefaultAvatarUrl: function () {
-      return "./assets/images/joao-avatar.png";
+      // Caminho absoluto corrigido com base na estrutura de pastas
+      return "/public/modules/joao-ia/assets/images/joao-avatar.png"; 
     },
 
     createWidget: function () {
@@ -409,7 +411,7 @@
     sendToBackend: async function (userMessage) {
       console.log("🔄 Enviando para IA:", userMessage);
 
-      // 🚨 CORREÇÃO CRÍTICA AQUI: Usa a URL absoluta configurada no topo
+      // 🚨 AGORA USANDO O ENDPOINT RELATIVO DO NETLIFY
       const functionUrl = REQUEST_ENDPOINT;
 
       const payload = JSON.stringify({ prompt: userMessage });
@@ -602,6 +604,34 @@
         this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
       });
     },
+
+    // 🚩 MÉTODO ADD MESSAGE INSERIDO PARA CORRIGIR 'Uncaught TypeError: this.addMessage is not a function'
+    addMessage: function (text, isUser = false) {
+      if (!this.elements.messages || !text) return;
+
+      const messageElement = document.createElement('div');
+      messageElement.className = `joao-ia-message ${isUser ? 'joao-ia-user' : 'joao-ia-bot'}`;
+
+      const content = document.createElement('div');
+      content.className = 'joao-ia-message-content';
+
+      // Converte Markdown para mensagens do bot
+      content.innerHTML = isUser ? text : convertMarkdown(text); // Usa a função auxiliar global
+
+      messageElement.appendChild(content);
+      this.elements.messages.appendChild(messageElement);
+
+      this.messages.push({ text: text, isUser: isUser, timestamp: new Date().toISOString() });
+
+      // Limita o histórico
+      if (this.messages.length > this.config.maxHistory) {
+        this.messages.shift(); // Remove a mensagem mais antiga do array
+      }
+
+      this.saveHistory();
+      this.scrollToBottom();
+    },
+    // FIM DA CORREÇÃO ADD MESSAGE
 
     applyTheme: function () {
       if (!this.elements.container) return;
