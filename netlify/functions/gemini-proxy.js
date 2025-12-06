@@ -1,8 +1,8 @@
 // netlify/functions/gemini-proxy.js
-// VERSÃO 4.6: CORREÇÃO CRÍTICA DO 'system_instruction' para o formato REST API.
+// VERSÃO 4.7: CORREÇÃO CRÍTICA DO PAYLOAD: Remove o campo 'config' inválido para a API REST.
 
 exports.handler = async (event, context) => {
-    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.6 - API Fix) ===");
+    console.log("=== JOÃO IA - SISTEMA ATIVO (v4.7 - API Final) ===");
     
     // Configurações da API Gemini
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -27,121 +27,76 @@ exports.handler = async (event, context) => {
 
         if (!prompt || prompt.trim() === '') {
             return { 
-                statusCode: 400,
-                headers,
-                body: JSON.stringify({ status: "error", resposta: "Digite sua pergunta." }) 
+                statusCode: 400, 
+                headers, 
+                body: JSON.stringify({ status: "error", resposta: "A requisição está vazia." }) 
             };
         }
         
-        const lower = prompt.toLowerCase().trim();
+        // 1. Definição da Instrução do Sistema (Personality)
+        const systemInstruction = `Você é o "João IA", um assistente digital focado em história, cultura e temas afro-brasileiros. Seu objetivo é apoiar estudantes, educadores e a comunidade do projeto "Somos Um". Responda de forma informativa e inspiradora, mantendo a personalidade de um mentor sábio e acolhedor. Sempre que possível, utilize uma linguagem que valorize a cultura e a história africana e afro-brasileira.`;
         
-        // ===================================
-        // ========== 2. RESPOSTAS RÁPIDAS (Lógica Prioritária) ==========
-        // ===================================
-        
-        // Saudações
-        if (["oi", "olá", "ola", "bom dia", "boa tarde", "boa noite"].includes(lower)) {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: "Olá! Sou João, assistente pedagógico. Como posso ajudar com cultura afro-brasileira?" 
-                })
-            };
-        }
-        
-        // Identificação
-        if (lower.includes("qual seu nome") || lower.includes("quem é você") || lower === "joao") {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    status: "success", 
-                    resposta: "Sou João, assistente da plataforma Somos Um. Especializado em educação sobre cultura afro-brasileira." 
-                })
-            };
-        }
-        
-        // Comandos de menu
-        const modulos = {
-            "👨‍🏫": "Módulo Educador: recursos para professores (planos, materiais).",
-            "📋": "Plano de Aula: crio planos personalizados. Exemplo: 'Plano sobre Zumbi para 8º ano'",
-            "🎓": "Módulo Estudante: conteúdos, quizzes e biblioteca.",
-            "📚": "Biblioteca: livros, artigos e vídeos especializados.",
-            "⚖️": "Lei 10.639/2003: ensino obrigatório da cultura afro-brasileira.",
-            "menu": "Módulos: 👨‍🏫 Educador | 📋 Plano Aula | 🎓 Estudante | 📚 Biblioteca | ⚖️ Lei 10.639"
-        };
-        
-        for (const [key, resposta] of Object.entries(modulos)) {
-            if (prompt.includes(key) || lower === key) {
-                return { statusCode: 200, headers, body: JSON.stringify({ status: "success", resposta }) };
-            }
-        }
-        
-        // ===================================
-        // ========== 3. FALLBACK PARA GOOGLE GEMINI (VIA fetch) ==========
-        // ===================================
-
-        // Configuração do AbortController para Timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-        
-        // 1. Definição da Persona (System Instruction)
-        const systemInstruction = `Você é o João, um assistente pedagógico especializado no ensino de cultura afro-brasileira e na Lei 10.639/2003. Seja didático, objetivo e forneça exemplos de aplicação em sala de aula (ex: Fundamental I, Fundamental II, Ensino Médio). **Sua resposta deve ser curta e direta, com no máximo 150 palavras, devido a limitações de recursos.**`;
-
-        // 2. Montagem do Corpo da Requisição
-        // CORREÇÃO CRÍTICA: systemInstruction deve ser passado dentro do objeto 'config' (camelCase)
-        const requestBody = {
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
-            config: {
-                systemInstruction: systemInstruction,
-                temperature: 0.7 
-            }
-        };
-
-        let fetchResponse;
-        let apiData;
-
-        try {
-            // 3. Chamada à API com o AbortController
-            fetchResponse = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+        // 2. Construção do Payload - CORRIGIDO (Remove 'config' e usa 'systemInstruction' no 'content')
+        const payload = {
+            contents: [
+                {
+                    role: "user",
+                    parts: [
+                        { text: systemInstruction },
+                        { text: prompt }
+                    ]
+                }
+            ],
+            // 'config' REMOVIDO
+            safetySettings: [
+                {
+                    category: "HARM_CATEGORY_HARASSMENT",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
                 },
-                body: JSON.stringify(requestBody),
-                signal: controller.signal // Adiciona o sinal de timeout
-            });
+                {
+                    category: "HARM_CATEGORY_HATE_SPEECH",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                }
+            ]
+        };
 
-            clearTimeout(timeoutId); // Limpa o timeout se a resposta for rápida
-            apiData = await fetchResponse.json();
+        // 3. Execução com Timeout
+        const fetchPromise = fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-        } catch (error) {
-            clearTimeout(timeoutId);
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Request Timeout")), REQUEST_TIMEOUT)
+        );
 
-            // Verifica se o erro foi causado pelo timeout (aborted)
-            if (error.name === 'AbortError') {
-                console.error("💥 Erro de Timeout Gemini: A requisição excedeu 15 segundos.");
-                
-                // MENSAGEM COM TAG [TIMEOUT] PARA O FRONTEND
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({
-                        status: "success",
-                        // Adiciona a tag [TIMEOUT] no início para o frontend identificar
-                        resposta: "[TIMEOUT]A IA está demorando demais para processar a resposta. Tente reformular sua pergunta."
-                    })
-                };
-            }
-            
-            throw error; 
+        const fetchResponse = await Promise.race([fetchPromise, timeoutPromise]);
+
+        // 4. Tratamento da Resposta
+        if (fetchResponse.statusText === "Request Timeout") {
+            console.error("⏳ Timeout da Requisição.");
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: "success",
+                    resposta: "[TIMEOUT] Desculpe, a IA demorou muito para responder. Tente novamente ou simplifique a pergunta."
+                })
+            };
         }
-        
-        // 4. Tratamento de Erro da API (Respostas 4xx/5xx ou erro no payload)
-        if (!fetchResponse.ok || apiData.error) {
-            console.error("💥 Erro da API Gemini:", apiData.error ? (apiData.error.message || fetchResponse.statusText) : fetchResponse.statusText);
+
+        if (!fetchResponse.ok) {
+            const apiData = await fetchResponse.json().catch(() => ({}));
+            console.error("❌ Falha na API Gemini:", apiData.error ? (apiData.error.message || fetchResponse.statusText) : fetchResponse.statusText);
             
             // Retorna o fallback padrão em caso de falha da API
             return {
@@ -155,6 +110,7 @@ exports.handler = async (event, context) => {
         }
 
         // 5. Extração da Resposta
+        const apiData = await fetchResponse.json();
         const iaResposta = apiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Não foi possível extrair a resposta da IA.";
 
         console.log("✅ Resposta Gemini:", iaResposta.substring(0, 100) + "...");
@@ -177,7 +133,7 @@ exports.handler = async (event, context) => {
             headers,
             body: JSON.stringify({ 
                 status: "error", 
-                resposta: "Desculpe, houve um erro interno na função. Tente novamente." 
+                resposta: "Desculpe, houve um erro interno do servidor. Tente novamente." 
             })
         };
     }
