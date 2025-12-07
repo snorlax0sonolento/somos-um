@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO MODO CLARO FIXO (v4.2 - Design Modernizado) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO MODO CLARO FIXO (v4.3 - Tema Claro Fixo Permanentemente) ==========
 (function (global, document) {
   "use strict";
 
