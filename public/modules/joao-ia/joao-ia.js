@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO MODO CLARO FIXO (v4.0 - Tema Escuro Removido) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO MODO CLARO FIXO (v4.1 - Tema Absolutamente Removido) ==========
 (function (global, document) {
   "use strict";
 
@@ -75,7 +75,7 @@
         "Fale sobre a Capoeira e suas origens.",
       ],
       storageKey: "joaoIAHistory",
-      // theme: getDataAttr("theme") || "auto", <-- REMOVIDO
+      // O 'theme' foi removido permanentemente, fixando no modo claro via CSS
       avatarUrl: getDataAttr("avatar-url") || null,
       proxyUrl: getDataAttr("proxy-url") || REQUEST_ENDPOINT,
     },
@@ -101,7 +101,6 @@
 
       this.loadHistory();
       this.renderChatWindow();
-      // this.applyTheme(); <-- REMOVIDO
       this.addEventListeners();
 
       if (this.messages.length === 0) {
@@ -173,12 +172,8 @@
       this.renderMessages();
       this.renderSuggestions(this.config.initialSuggestions);
     },
-    
-    // ========== FUNÇÕES DE TEMA (APAGADAS) ==========\
-    /* applyTheme: function () { 
-       // Lógica de tema removida para fixar no modo claro
-    }, */
 
+    // As funções applyTheme e toda lógica de tema foram removidas permanentemente.
 
     // ========== FUNÇÕES DE MENSAGEM ==========\
     addMessage: function (msg, save = true) {
@@ -347,7 +342,6 @@
         if (this.isOpen) {
             this.elements.input.focus();
             this.scrollToBottom();
-            // this.applyTheme(); <-- REMOVIDO
         }
       });
 
@@ -373,8 +367,6 @@
         this.isOpen = false;
         this.elements.container.classList.remove("joao-ia-open");
       });
-      
-      // OBSERVER DE TEMA REMOVIDO
     },
 
     clearHistory: function () {
@@ -418,7 +410,7 @@
 
     updateConfig: function (newConfig) {
       Object.assign(this.config, newConfig);
-      // Lógica de tema removida daqui também
+      // Lógica de tema foi removida permanentemente
     },
   };
 

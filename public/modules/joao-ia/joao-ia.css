@@ -1,4 +1,4 @@
-/* ========== MÓDULO JOÃO IA - DESIGN FIXO MODO CLARO (v4.0 - Gradiente e Balão) ========== */
+/* ========== MÓDULO JOÃO IA - DESIGN FIXO PERMANENTE MODO CLARO (v4.1 - Tema Absolutamente Removido) ========== */
 :root {
   --joao-primary: #a55734; /* Terracota/Vermelho Queimado */
   --joao-primary-dark: #8c472a;
@@ -6,13 +6,13 @@
   --joao-accent: #ff6b35;
   --joao-gold: #ffd700;
 
-  /* Cores Padrão (Fixadas em CLARO) */
-  --joao-bg-light: #ffffff; /* Fundo Sólido (Área de mensagens) */
-  --joao-surface-light: #ffffff; /* Superfície (Janela, sugestões) */
-  --joao-text-light: #2c3e50; /* Texto Escuro */
-  --joao-border-light: rgba(0, 0, 0, 0.1); /* Borda Leve */
+  /* Cores Padrão (FIXADAS em CLARO) */
+  --joao-bg: #ffffff; /* Fundo Sólido (Área de mensagens) */
+  --joao-surface: #ffffff; /* Superfície (Janela, sugestões) */
+  --joao-text: #2c3e50; /* Texto Escuro (Preto) */
+  --joao-border: rgba(0, 0, 0, 0.1); /* Borda Leve */
   
-  /* Cores de Mensagens (Estilo Novo Gradiente) */
+  /* Cores de Mensagens (Estilo Gradiente) */
   --joao-user-bg-start: #8c472a; /* Cor inicial do gradiente (Primary Dark) */
   --joao-user-bg-end: #a55734;   /* Cor final do gradiente (Primary) */
   --joao-bot-bg: #f0f0f0;        /* Cinza Claro (Mantido para o Bot) */
@@ -38,7 +38,7 @@
   width: 70px;
   height: 70px;
   background-color: var(--joao-primary);
-  color: var(--joao-bg-light); 
+  color: var(--joao-bg); /* Usa a cor de fundo do chat (branco) */
   border-radius: 50%;
   box-shadow: var(--joao-shadow);
   display: flex;
@@ -83,9 +83,9 @@
   height: 500px;
   display: none;
   flex-direction: column;
-  background-color: var(--joao-surface-light); 
-  color: var(--joao-text-light);
-  border: 1px solid var(--joao-border-light);
+  background-color: var(--joao-surface); /* Usa a cor de superfície CLARA */
+  color: var(--joao-text); /* Usa a cor de texto ESCURA */
+  border: 1px solid var(--joao-border);
   
   border-radius: var(--joao-border-radius-lg);
   box-shadow: var(--joao-shadow);
@@ -108,7 +108,7 @@
   justify-content: space-between;
   padding: 15px 20px;
   background-color: var(--joao-primary);
-  color: var(--joao-bg-light); 
+  color: var(--joao-bg); /* Texto Branco */
   flex-shrink: 0;
 }
 
@@ -135,7 +135,7 @@
   padding: 5px;
   border-radius: 50%;
   transition: background-color 0.2s;
-  color: var(--joao-bg-light); 
+  color: var(--joao-bg); 
 }
 
 .joao-ia-header-icon:hover {
@@ -173,7 +173,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px; 
-  background-color: var(--joao-bg-light); 
+  background-color: var(--joao-bg); 
   
   scrollbar-width: thin;
   scrollbar-color: var(--joao-primary) transparent;
@@ -221,7 +221,7 @@
   align-self: flex-end;
   /* Aplica o Gradiente solicitado */
   background: linear-gradient(135deg, var(--joao-user-bg-start), var(--joao-user-bg-end));
-  color: var(--joao-bg-light); /* Texto Branco */
+  color: var(--joao-bg); /* Texto Branco */
   /* Ajuste de Raio para balão */
   border-top-right-radius: 4px; /* Canto superior direito mais suave */
   border-bottom-right-radius: 4px; /* Canto inferior direito mais suave */
@@ -247,7 +247,7 @@
 .joao-ia-message.joao-ia-bot {
   align-self: flex-start;
   background-color: var(--joao-bot-bg);
-  color: var(--joao-text-light);
+  color: var(--joao-text);
   border: none;
   /* Ajuste de Raio para balão */
   border-top-left-radius: 4px; /* Canto superior esquerdo mais suave */
@@ -282,7 +282,7 @@
 /* No user (fundo gradiente), o texto forte (strong) é branco */
 .joao-ia-message.joao-ia-user strong {
   font-weight: 700;
-  color: var(--joao-bg-light); 
+  color: var(--joao-bg); 
 }
 
 /* ==================== SUGESTÕES DE PERGUNTAS ==================== */
@@ -291,8 +291,8 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px 20px;
-  border-top: 1px solid var(--joao-border-light);
-  background-color: var(--joao-surface-light);
+  border-top: 1px solid var(--joao-border);
+  background-color: var(--joao-surface);
   max-height: 80px; 
   overflow-y: auto;
   flex-shrink: 0;
@@ -304,8 +304,8 @@
 
 .joao-ia-suggestion-chip {
   background-color: var(--joao-bot-bg);
-  color: var(--joao-text-light);
-  border: 1px solid var(--joao-border-light);
+  color: var(--joao-text);
+  border: 1px solid var(--joao-border);
   padding: 6px 12px;
   border-radius: 20px;
   cursor: pointer;
@@ -316,7 +316,7 @@
 
 .joao-ia-suggestion-chip:hover {
   background-color: var(--joao-primary);
-  color: var(--joao-bg-light);
+  color: var(--joao-bg);
   border-color: var(--joao-primary);
 }
 
@@ -325,21 +325,21 @@
 .joao-ia-footer {
   display: flex;
   padding: 10px 15px;
-  border-top: 1px solid var(--joao-border-light);
-  background-color: var(--joao-surface-light);
+  border-top: 1px solid var(--joao-border);
+  background-color: var(--joao-surface);
   flex-shrink: 0;
 }
 
 .joao-ia-input {
   flex-grow: 1;
   padding: 10px 15px;
-  border: 1px solid var(--joao-border-light);
+  border: 1px solid var(--joao-border);
   border-radius: 25px; 
   font-size: 1rem;
   margin-right: 10px;
   outline: none;
-  background-color: var(--joao-bg-light);
-  color: var(--joao-text-light);
+  background-color: var(--joao-bg);
+  color: var(--joao-text);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
