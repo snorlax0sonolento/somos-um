@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.3 - UX e Tema Global) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.4 - Design Fix) ==========
 (function (global, document) {
   "use strict";
 
@@ -114,42 +114,51 @@
     },
 
     renderChatWindow: function () {
-      const container = document.createElement("div");
-      container.className = `joao-ia-container joao-ia-position-${getDataAttr("position") || "bottom-right"}`;
-      container.innerHTML = `
-                <div class="joao-ia-toggle" title="${this.config.botName}">
-                    <i class="fas fa-comment-dots"></i>
-                </div>
-                <div class="joao-ia-window">
-                    <div class="joao-ia-header">
-                        <div class="joao-ia-header-info">
-                            <div class="joao-ia-avatar">
-                                ${this.config.avatarUrl 
-                                    ? `<img src="${this.config.avatarUrl}" alt="Avatar" class="joao-ia-avatar-img">`
-                                    : `<i class="fas fa-robot"></i>`
-                                }
-                            </div>
-                            <h3>${this.config.botName}</h3>
+      
+        // Lógica do Avatar para o Botão Toggle
+        const toggleContent = this.config.avatarUrl
+            ? `<img src="${this.config.avatarUrl}" alt="Avatar" />`
+            : `<i class="fas fa-comment-dots"></i>`;
+
+        // Lógica do Avatar para o Perfil no Header
+        const profileContent = this.config.avatarUrl
+            ? `<img src="${this.config.avatarUrl}" alt="Avatar" class="joao-ia-avatar-img">`
+            : `<i class="fas fa-robot"></i>`;
+
+
+        const container = document.createElement("div");
+        container.className = `joao-ia-container joao-ia-position-${getDataAttr("position") || "bottom-right"}`;
+        container.innerHTML = `
+            <div class="joao-ia-toggle" title="${this.config.botName}">
+                ${toggleContent}
+            </div>
+            <div class="joao-ia-window">
+                <div class="joao-ia-header">
+                    <div class="joao-ia-header-info">
+                        <div class="joao-ia-avatar">
+                            ${profileContent}
                         </div>
-                        <div class="joao-ia-header-controls">
-                            <div class="joao-ia-header-icon joao-ia-clear-history" title="Limpar Histórico">
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                            <div class="joao-ia-header-icon joao-ia-close" title="Fechar Chat">
-                                <i class="fas fa-times"></i>
-                            </div>
+                        <h3>${this.config.botName}</h3>
+                    </div>
+                    <div class="joao-ia-header-controls">
+                        <div class="joao-ia-header-icon joao-ia-clear-history" title="Limpar Histórico">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div class="joao-ia-header-icon joao-ia-close" title="Fechar Chat">
+                            <i class="fas fa-times"></i>
                         </div>
                     </div>
-                    <div class="joao-ia-messages">
-                        </div>
-                    <div class="joao-ia-suggestions">
-                        </div>
-                    <div class="joao-ia-footer">
-                        <input type="text" class="joao-ia-input" placeholder="Pergunte ao ${this.config.botName}..." />
-                        <button class="joao-ia-send" disabled><i class="fas fa-paper-plane"></i></button>
-                    </div>
                 </div>
-            `;
+                <div class="joao-ia-messages">
+                    </div>
+                <div class="joao-ia-suggestions">
+                    </div>
+                <div class="joao-ia-footer">
+                    <input type="text" class="joao-ia-input" placeholder="Pergunte ao ${this.config.botName}..." />
+                    <button class="joao-ia-send" disabled><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        `;
 
       document.body.appendChild(container);
 

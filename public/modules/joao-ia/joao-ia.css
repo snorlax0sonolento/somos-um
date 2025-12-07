@@ -1,4 +1,4 @@
-/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v3.3 - Tema e UX Corrigidos) ========== */
+/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v3.4 - Tema Light Fix) ========== */
 :root {
   --joao-primary: #a55734; /* Terracota/Vermelho Queimado */
   --joao-primary-dark: #8c472a;
@@ -31,9 +31,6 @@
   z-index: 9999;
   bottom: 30px;
   right: 30px;
-  
-  /* Posições */
-  /* As classes joao-ia-position-bottom-left, joao-ia-position-top-right, etc. devem ser usadas para sobrescrever */
 }
 
 /* ==================== BOTÃO DE TOGGLE ==================== */
@@ -41,7 +38,7 @@
   width: 70px;
   height: 70px;
   background-color: var(--joao-primary);
-  color: var(--joao-bg-light);
+  color: var(--joao-bg-light); /* Ícone/Imagem sempre em contraste com o primário */
   border-radius: 50%;
   box-shadow: var(--joao-shadow);
   display: flex;
@@ -49,6 +46,7 @@
   justify-content: center;
   cursor: pointer;
   transition: transform 0.3s ease-in-out, background-color 0.2s;
+  overflow: hidden; /* Garante que a imagem se encaixe */
 }
 
 .joao-ia-toggle:hover {
@@ -59,10 +57,24 @@
   font-size: 2.2rem;
   transition: transform 0.3s ease-in-out;
 }
+/* Estilo para a imagem no toggle */
+.joao-ia-toggle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
 
 .joao-ia-open .joao-ia-toggle {
   transform: rotate(45deg);
+  /* Cor do ícone de fechar */
+  background-color: var(--joao-primary-dark);
 }
+
+.joao-ia-open .joao-ia-toggle i {
+  transform: rotate(-45deg);
+}
+
 
 /* ==================== JANELA DO CHAT ==================== */
 .joao-ia-window {
@@ -73,7 +85,11 @@
   height: 500px;
   display: none;
   flex-direction: column;
-  background-color: var(--joao-surface-light);
+  /* Garante o modo CLARO como padrão, caso o dark-theme não esteja presente */
+  background-color: var(--joao-surface-light); 
+  color: var(--joao-text-light);
+  border: 1px solid var(--joao-border-light);
+  
   backdrop-filter: blur(10px);
   border-radius: var(--joao-border-radius-lg);
   box-shadow: var(--joao-shadow);
@@ -81,7 +97,6 @@
   opacity: 0;
   transform: scale(0.95) translateY(10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
-  border: 1px solid var(--joao-border-light);
 }
 
 .joao-ia-open .joao-ia-window {
@@ -90,7 +105,7 @@
   transform: scale(1) translateY(0);
 }
 
-/* Modo Escuro Global */
+/* Modo Escuro Global - Sobrescreve TUDO */
 .joao-ia-theme-dark .joao-ia-window {
   background-color: var(--joao-surface-dark);
   color: var(--joao-text-dark);
@@ -104,7 +119,7 @@
   justify-content: space-between;
   padding: 15px 20px;
   background-color: var(--joao-primary);
-  color: var(--joao-bg-light);
+  color: var(--joao-bg-light); /* Ícones e Texto do Header sempre CLAROS */
   flex-shrink: 0;
 }
 
@@ -148,6 +163,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  flex-shrink: 0; /* Impede que o avatar seja espremido */
 }
 
 .joao-ia-avatar-img {
@@ -208,20 +224,20 @@
   border-bottom-right-radius: 4px;
 }
 
-/* Mensagem do Bot */
+/* Mensagem do Bot - Padrão CLARO */
 .joao-ia-message.joao-ia-bot {
   align-self: flex-start;
   background-color: var(--joao-bg-light);
   border: 1px solid var(--joao-border-light);
   color: var(--joao-text-light);
   border-bottom-left-radius: 4px;
-  padding: 15px 20px; /* Mais espaço para o bot */
+  padding: 15px 20px;
 }
 
-/* CORREÇÃO CRÍTICA DO MODO ESCURO PARA O TEXTO DO BOT */
+/* Mensagem do Bot - Tema ESCURO */
 .joao-ia-theme-dark .joao-ia-message.joao-ia-bot {
   background-color: var(--joao-surface-dark);
-  color: var(--joao-text-dark); /* Texto Claro no Modo Escuro */
+  color: var(--joao-text-dark); 
   border: 1px solid var(--joao-border-dark);
 }
 
@@ -246,7 +262,7 @@
   padding: 15px 20px;
   border-top: 1px solid var(--joao-border-light);
   background-color: var(--joao-bg-light);
-  max-height: 80px; /* AJUSTE PARA OCUPAR MENOS ESPAÇO */
+  max-height: 80px; 
   overflow-y: auto;
   flex-shrink: 0;
 }
@@ -431,7 +447,7 @@
 
   .joao-ia-suggestions {
     padding: 12px 15px;
-    max-height: 60px; /* OTIMIZAÇÃO: Sugestões menores em mobile */
+    max-height: 60px; 
     min-height: 60px;
   }
 
