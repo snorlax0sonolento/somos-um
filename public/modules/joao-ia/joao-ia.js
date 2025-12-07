@@ -1,9 +1,8 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.7 - Theme Fix Final) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO MODO CLARO FIXO (v4.0 - Tema Escuro Removido) ==========
 (function (global, document) {
   "use strict";
 
   // ========== CONFIGURAÇÕES GLOBAIS - ATUALIZADO PARA NETLIFY ==========\
-  // O endpoint do Netlify é relativo à raiz do site, assumindo a função em netlify/functions/gemini-proxy.js
   const REQUEST_ENDPOINT = "/.netlify/functions/gemini-proxy";
   const REQUEST_TIMEOUT = 15001;
 
@@ -37,7 +36,7 @@
   function markdownToHtml(markdown) {
     let html = markdown || "";
 
-    // Títulos (H3, H4, H5, H6) - Os títulos H1 e H2 geralmente não são usados no chat
+    // Títulos (H3, H4, H5, H6)
     html = html.replace(/^###\s*(.*$)/gim, '<h4>$1</h4>'); 
     html = html.replace(/^##\s*(.*$)/gim, '<h3>$1</h3>');
     html = html.replace(/^#\s*(.*$)/gim, '<h2>$1</h2>');
@@ -76,7 +75,7 @@
         "Fale sobre a Capoeira e suas origens.",
       ],
       storageKey: "joaoIAHistory",
-      theme: getDataAttr("theme") || "auto", // auto, light, dark
+      // theme: getDataAttr("theme") || "auto", <-- REMOVIDO
       avatarUrl: getDataAttr("avatar-url") || null,
       proxyUrl: getDataAttr("proxy-url") || REQUEST_ENDPOINT,
     },
@@ -102,7 +101,7 @@
 
       this.loadHistory();
       this.renderChatWindow();
-      this.applyTheme(); // Aplica o tema logo na inicialização
+      // this.applyTheme(); <-- REMOVIDO
       this.addEventListeners();
 
       if (this.messages.length === 0) {
@@ -115,12 +114,10 @@
 
     renderChatWindow: function () {
       
-        // Lógica do Avatar para o Botão Toggle
         const toggleContent = this.config.avatarUrl
             ? `<img src="${this.config.avatarUrl}" alt="Avatar" />`
             : `<i class="fas fa-comment-dots"></i>`;
 
-        // Lógica do Avatar para o Perfil no Header
         const profileContent = this.config.avatarUrl
             ? `<img src="${this.config.avatarUrl}" alt="Avatar" class="joao-ia-avatar-img">`
             : `<i class="fas fa-robot"></i>`;
@@ -177,28 +174,11 @@
       this.renderSuggestions(this.config.initialSuggestions);
     },
     
-    // ========== FUNÇÕES DE TEMA (APENAS LEITURA DO ATRIBUTO GLOBAL) ==========\
-    applyTheme: function () {
-      let themeToApply = this.config.theme;
+    // ========== FUNÇÕES DE TEMA (APAGADAS) ==========\
+    /* applyTheme: function () { 
+       // Lógica de tema removida para fixar no modo claro
+    }, */
 
-      if (themeToApply === "auto") {
-        const globalThemeAttr = document.documentElement.getAttribute('data-theme') || document.body.getAttribute('data-theme');
-        if (globalThemeAttr) {
-            themeToApply = globalThemeAttr; // Lê o data-theme do site
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            themeToApply = "dark"; // Lê a preferência do SO
-        } else {
-            themeToApply = "light";
-        }
-      }
-      
-      // Aplica ou remove a classe do modo escuro no container principal
-      if (themeToApply === "dark") {
-        this.elements.container.classList.add("joao-ia-theme-dark");
-      } else {
-        this.elements.container.classList.remove("joao-ia-theme-dark");
-      }
-    },
 
     // ========== FUNÇÕES DE MENSAGEM ==========\
     addMessage: function (msg, save = true) {
@@ -307,34 +287,34 @@
 
         clearTimeout(timeoutId);
 
+        if (response.status === 408 || (response.status === 504 && response.statusText === "Gateway Timeout")) {
+             throw new Error("[TIMEOUT]");
+        }
+        
         if (!response.ok) {
           throw new Error(`Erro de rede: ${response.statusText}`);
         }
 
         const data = await response.json();
         
-        // Se a resposta retornar um status de sucesso no body, mas com uma mensagem de fallback, ela é tratada aqui.
         if (data.status === "success" && data.resposta) {
              return data.resposta;
         }
 
-        // Caso a API do proxy retorne um erro explícito
         if (data.status === "error") {
             console.error("Erro da API no proxy:", data.resposta);
             return "Desculpe, houve um erro ao processar sua solicitação no servidor. Por favor, reformule a pergunta ou tente mais tarde.";
         }
 
 
-        // Fallback genérico, se o formato for inesperado (muito improvável)
         throw new Error("Resposta da API em formato inesperado.");
 
       } catch (error) {
-        if (error.name === 'AbortError') {
+        if (error.message.includes("[TIMEOUT]") || error.name === 'AbortError') {
              console.warn("Requisição abortada: Timeout.");
              return "[TIMEOUT] Desculpe, a IA demorou muito para responder. Tente novamente ou simplifique a pergunta.";
         }
         console.error("Erro na comunicação com a API:", error.message);
-        // Retorna a mensagem de fallback de API indisponível
         return "Desculpe, a IA está indisponível. Tente novamente em instantes. Enquanto isso, posso ajudar com os módulos da plataforma (Módulo Educador, Biblioteca, etc).";
       }
     },
@@ -367,7 +347,7 @@
         if (this.isOpen) {
             this.elements.input.focus();
             this.scrollToBottom();
-            this.applyTheme(); // Reaplica o tema (leitura do data-theme do site)
+            // this.applyTheme(); <-- REMOVIDO
         }
       });
 
@@ -394,10 +374,7 @@
         this.elements.container.classList.remove("joao-ia-open");
       });
       
-      // Observa a mudança de tema no elemento HTML/BODY (Tema Global do Site)
-      const themeObserver = new MutationObserver(this.applyTheme.bind(this));
-      themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-      themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+      // OBSERVER DE TEMA REMOVIDO
     },
 
     clearHistory: function () {
@@ -441,10 +418,7 @@
 
     updateConfig: function (newConfig) {
       Object.assign(this.config, newConfig);
-
-      if (newConfig.theme) {
-        this.applyTheme();
-      }
+      // Lógica de tema removida daqui também
     },
   };
 
