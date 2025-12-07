@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.5 - Design Fix) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.6 - Theme Fix) ==========
 (function (global, document) {
   "use strict";
 
@@ -293,7 +293,6 @@
         });
     },
 
-    // ATENÇÃO: ESTA FUNÇÃO NÃO FOI ALTERADA, CONFORME SOLICITADO PELO USUÁRIO.
     fetchGeminiResponse: async function (prompt) {
       try {
         const controller = new AbortController();

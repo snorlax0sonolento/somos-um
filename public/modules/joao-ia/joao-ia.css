@@ -1,4 +1,4 @@
-/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v3.5 - Final Design Fix) ========== */
+/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v3.6 - Final Theme Fix) ========== */
 :root {
   --joao-primary: #a55734; /* Terracota/Vermelho Queimado */
   --joao-primary-dark: #8c472a;
@@ -7,14 +7,14 @@
   --joao-gold: #ffd700;
 
   /* Temas Claro */
-  --joao-bg-light: #ffffff;
-  --joao-surface-light: rgba(255, 255, 255, 0.9);
+  --joao-bg-light: #ffffff; /* Fundo Sólido (Usado nas mensagens) */
+  --joao-surface-light: rgba(255, 255, 255, 0.9); /* Superfície Transparente (Usado na janela) */
   --joao-text-light: #2c3e50; /* Texto Escuro */
   --joao-border-light: rgba(0, 0, 0, 0.1);
 
   /* Temas Escuro */
-  --joao-bg-dark: #0f172a;
-  --joao-surface-dark: rgba(30, 41, 59, 0.9);
+  --joao-bg-dark: #0f172a; /* Fundo Sólido (Usado nas mensagens) */
+  --joao-surface-dark: rgba(30, 41, 59, 0.9); /* Superfície Transparente (Usado na janela) */
   --joao-text-dark: #f1f5f9; /* Cor do Texto Branco/Claro */
   --joao-border-dark: rgba(255, 255, 255, 0.1);
 
@@ -85,7 +85,7 @@
   height: 500px;
   display: none;
   flex-direction: column;
-  /* CORREÇÃO MODO CLARO: Fundo, Texto e Borda */
+  /* Padrão CLARO: Fundo, Texto e Borda */
   background-color: var(--joao-surface-light); 
   color: var(--joao-text-light);
   border: 1px solid var(--joao-border-light);
@@ -147,7 +147,7 @@
   padding: 5px;
   border-radius: 50%;
   transition: background-color 0.2s;
-  /* CORREÇÃO: Garante que os ícones do header (fechar e lixeira) sejam brancos, já que estão sobre um fundo escuro (primary) */
+  /* Garante que os ícones do header sejam brancos */
   color: var(--joao-bg-light); 
 }
 
@@ -189,12 +189,20 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* O background é herdado de .joao-ia-window */
+  
+  /* CORREÇÃO CRÍTICA: Fundo explícito para garantir a cor correta */
+  background-color: var(--joao-bg-light); 
   
   /* Scrollbar Customization */
   scrollbar-width: thin;
   scrollbar-color: var(--joao-primary) transparent;
 }
+
+/* Aplica o fundo escuro quando o tema escuro está ativo */
+.joao-ia-theme-dark .joao-ia-messages {
+  background-color: var(--joao-bg-dark);
+}
+
 
 .joao-ia-messages::-webkit-scrollbar {
   width: 6px;
@@ -276,7 +284,7 @@
 
 .joao-ia-theme-dark .joao-ia-suggestions {
   border-top: 1px solid var(--joao-border-dark);
-  background-color: var(--joao-surface-dark);
+  background-color: var(--joao-bg-dark); /* Usando bg-dark para ser coerente com messages */
 }
 
 .joao-ia-window.joao-ia-open .joao-ia-suggestions {
