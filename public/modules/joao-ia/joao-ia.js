@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.4 - Design Fix) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.5 - Design Fix) ==========
 (function (global, document) {
   "use strict";
 
@@ -192,6 +192,7 @@
         }
       }
       
+      // Aplica ou remove a classe do modo escuro no container principal
       if (themeToApply === "dark") {
         this.elements.container.classList.add("joao-ia-theme-dark");
       } else {
@@ -222,7 +223,6 @@
     scrollToBottom: function () {
       const messages = this.elements.messages;
       if (messages) {
-        // CORREÇÃO: Adiciona rolagem suave (behavior: 'smooth')
         messages.scrollTo({
           top: messages.scrollHeight,
           behavior: 'smooth' 
@@ -293,6 +293,7 @@
         });
     },
 
+    // ATENÇÃO: ESTA FUNÇÃO NÃO FOI ALTERADA, CONFORME SOLICITADO PELO USUÁRIO.
     fetchGeminiResponse: async function (prompt) {
       try {
         const controller = new AbortController();
