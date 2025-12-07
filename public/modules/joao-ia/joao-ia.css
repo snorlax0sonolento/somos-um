@@ -1,19 +1,22 @@
-/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v4.2) ========== */
+/* ========== MÓDULO JOÃO IA - DESIGN MODERNO COM SUPORTE A TEMA GLOBAL ========== */
+
+/* Variáveis para Modo Claro (Padrão) */
 :root {
+  /* Cores Principais - Mantidas */
   --joao-primary: #a55734;
   --joao-primary-dark: #8c472a;
   --joao-secondary: #3498db;
   --joao-accent: #ff6b35;
   --joao-gold: #ffd700;
 
-  /* Cores Padrão (FIXADAS em CLARO) */
+  /* Cores para Modo Claro (Default) */
   --joao-bg: #ffffff;
   --joao-surface: rgba(255, 255, 255, 0.95);
   --joao-text: #2c3e50;
   --joao-text-secondary: #64748b;
   --joao-border: rgba(0, 0, 0, 0.08);
   
-  /* Cores de Mensagens */
+  /* Cores de Mensagens - Modo Claro */
   --joao-user-bg: linear-gradient(135deg, #8c472a, #a55734);
   --joao-bot-bg: #f8fafc;
   
@@ -27,6 +30,43 @@
   
   /* Transições */
   --joao-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Se o site tem uma classe específica para modo escuro, ajuste aqui */
+/* Exemplos comuns: .dark-mode, .dark, [data-theme="dark"], body.dark */
+body.dark-mode,
+body.dark,
+[data-theme="dark"],
+.dark-mode {
+  /* Sobrescreve as variáveis para Modo Escuro */
+  --joao-bg: #0f172a;
+  --joao-surface: rgba(30, 41, 59, 0.95);
+  --joao-text: #f1f5f9;
+  --joao-text-secondary: #94a3b8;
+  --joao-border: rgba(255, 255, 255, 0.1);
+  
+  --joao-bot-bg: #1e293b;
+  
+  --joao-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  --joao-shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.2);
+  --joao-glow: 0 0 40px rgba(165, 87, 52, 0.1);
+}
+
+/* Se usar preferência de sistema (opcional) */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light-mode) {
+    --joao-bg: #0f172a;
+    --joao-surface: rgba(30, 41, 59, 0.95);
+    --joao-text: #f1f5f9;
+    --joao-text-secondary: #94a3b8;
+    --joao-border: rgba(255, 255, 255, 0.1);
+    
+    --joao-bot-bg: #1e293b;
+    
+    --joao-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    --joao-shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.2);
+    --joao-glow: 0 0 40px rgba(165, 87, 52, 0.1);
+  }
 }
 
 /* ==================== CONTAINER PRINCIPAL ==================== */
@@ -94,9 +134,9 @@
   background: var(--joao-surface);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--joao-border);
   border-radius: var(--joao-border-radius-lg);
-  box-shadow: var(--joao-shadow), inset 1px 1px 0px rgba(255, 255, 255, 0.5);
+  box-shadow: var(--joao-shadow), inset 1px 1px 0px rgba(255, 255, 255, 0.1);
   overflow: hidden;
   opacity: 0;
   transform: translateY(20px) scale(0.95);
@@ -224,7 +264,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  background: var(--joao-bg);
   min-height: 0;
   
   scrollbar-width: thin;
@@ -305,7 +345,7 @@
 .joao-ia-message.joao-ia-bot .joao-ia-message-content {
   background: var(--joao-bot-bg);
   color: var(--joao-text);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--joao-border);
   border-bottom-left-radius: 4px;
 }
 
@@ -356,7 +396,7 @@
 }
 
 .joao-ia-message.joao-ia-bot .joao-ia-message-content strong {
-  color: var(--joao-primary-dark);
+  color: var(--joao-primary);
   font-weight: 700;
 }
 
@@ -392,7 +432,7 @@
 }
 
 .joao-ia-suggestions::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--joao-border);
   border-radius: 2px;
 }
 
@@ -438,9 +478,9 @@
 .joao-ia-input {
   flex-grow: 1;
   padding: 16px 24px;
-  border: 2px solid transparent;
+  border: 2px solid var(--joao-border);
   border-radius: 50px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--joao-bg);
   color: var(--joao-text);
   font-size: 0.95rem;
   outline: none;
@@ -453,7 +493,7 @@
 .joao-ia-input:focus {
   border-color: var(--joao-primary);
   box-shadow: 0 8px 30px rgba(165, 87, 52, 0.2);
-  background: white;
+  background: var(--joao-bg);
   transform: translateY(-2px);
 }
 
@@ -502,7 +542,7 @@
   width: fit-content;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--joao-border);
   align-self: flex-start;
 }
 
