@@ -1,4 +1,4 @@
-// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.6 - Theme Fix) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO COM BANCO DE DADOS EXPANDIDO (v3.7 - Theme Fix Final) ==========
 (function (global, document) {
   "use strict";
 
@@ -184,9 +184,9 @@
       if (themeToApply === "auto") {
         const globalThemeAttr = document.documentElement.getAttribute('data-theme') || document.body.getAttribute('data-theme');
         if (globalThemeAttr) {
-            themeToApply = globalThemeAttr;
+            themeToApply = globalThemeAttr; // Lê o data-theme do site
         } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            themeToApply = "dark";
+            themeToApply = "dark"; // Lê a preferência do SO
         } else {
             themeToApply = "light";
         }

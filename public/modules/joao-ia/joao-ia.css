@@ -1,4 +1,4 @@
-/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v3.6 - Final Theme Fix) ========== */
+/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v3.7 - Critical Theme Fix) ========== */
 :root {
   --joao-primary: #a55734; /* Terracota/Vermelho Queimado */
   --joao-primary-dark: #8c472a;
@@ -38,7 +38,7 @@
   width: 70px;
   height: 70px;
   background-color: var(--joao-primary);
-  color: var(--joao-bg-light); /* Ícone/Imagem sempre em contraste com o primário */
+  color: var(--joao-bg-light); 
   border-radius: 50%;
   box-shadow: var(--joao-shadow);
   display: flex;
@@ -46,7 +46,7 @@
   justify-content: center;
   cursor: pointer;
   transition: transform 0.3s ease-in-out, background-color 0.2s;
-  overflow: hidden; /* Garante que a imagem se encaixe */
+  overflow: hidden; 
 }
 
 .joao-ia-toggle:hover {
@@ -57,7 +57,7 @@
   font-size: 2.2rem;
   transition: transform 0.3s ease-in-out;
 }
-/* Estilo para a imagem no toggle (garantindo que preencha 100% e cubra o fundo) */
+/* Estilo para a imagem no toggle */
 .joao-ia-toggle img {
     width: 100%;
     height: 100%;
@@ -67,7 +67,6 @@
 
 .joao-ia-open .joao-ia-toggle {
   transform: rotate(45deg);
-  /* Cor do ícone de fechar */
   background-color: var(--joao-primary-dark);
 }
 
@@ -119,7 +118,6 @@
   justify-content: space-between;
   padding: 15px 20px;
   background-color: var(--joao-primary);
-  /* Os ícones e texto do Header ficam sempre brancos pois o background é primário (escuro) */
   color: var(--joao-bg-light); 
   flex-shrink: 0;
 }
@@ -147,7 +145,6 @@
   padding: 5px;
   border-radius: 50%;
   transition: background-color 0.2s;
-  /* Garante que os ícones do header sejam brancos */
   color: var(--joao-bg-light); 
 }
 
@@ -161,15 +158,15 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: var(--joao-gold); /* Fundo amarelo/dourado */
+  background-color: var(--joao-gold); 
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  flex-shrink: 0; /* Impede que o avatar seja espremido */
+  flex-shrink: 0; 
 }
 
-/* Estilo para a imagem no header (para cobrir o fundo amarelo) */
+/* Estilo para a imagem no header */
 .joao-ia-avatar-img {
   width: 100%;
   height: 100%;
@@ -189,18 +186,23 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  
-  /* CORREÇÃO CRÍTICA: Fundo explícito para garantir a cor correta */
-  background-color: var(--joao-bg-light); 
+  /* O background-color foi removido daqui e será definido nos seletores de tema para maior especificidade */
   
   /* Scrollbar Customization */
   scrollbar-width: thin;
   scrollbar-color: var(--joao-primary) transparent;
 }
 
-/* Aplica o fundo escuro quando o tema escuro está ativo */
+/* FIX CRÍTICO: Usa seletor :not() para garantir que o fundo claro seja aplicado com alta prioridade */
+.joao-ia-container:not(.joao-ia-theme-dark) .joao-ia-messages {
+    /* O !important é necessário para anular qualquer estilo herdado ou em cache */
+    background-color: var(--joao-bg-light) !important; 
+}
+
+
+/* Aplica o fundo escuro quando o tema escuro está ativo (também com !important por simetria) */
 .joao-ia-theme-dark .joao-ia-messages {
-  background-color: var(--joao-bg-dark);
+  background-color: var(--joao-bg-dark) !important;
 }
 
 
@@ -270,7 +272,7 @@
 
 /* ==================== SUGESTÕES DE PERGUNTAS (UX OTIMIZADA) ==================== */
 .joao-ia-suggestions {
-  display: none; /* Padrão: oculto, só aparece com conteúdo */
+  display: none; 
   flex-wrap: wrap;
   gap: 8px;
   padding: 15px 20px;
@@ -284,7 +286,7 @@
 
 .joao-ia-theme-dark .joao-ia-suggestions {
   border-top: 1px solid var(--joao-border-dark);
-  background-color: var(--joao-bg-dark); /* Usando bg-dark para ser coerente com messages */
+  background-color: var(--joao-bg-dark); 
 }
 
 .joao-ia-window.joao-ia-open .joao-ia-suggestions {
