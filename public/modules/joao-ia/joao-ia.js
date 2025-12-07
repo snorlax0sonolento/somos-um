@@ -1,12 +1,12 @@
-// ========== MÓDULO JOÃO IA - VERSÃO MODO CLARO FIXO (v4.1 - Tema Absolutamente Removido) ==========
+// ========== MÓDULO JOÃO IA - VERSÃO MODO CLARO FIXO (v4.2 - Design Modernizado) ==========
 (function (global, document) {
   "use strict";
 
-  // ========== CONFIGURAÇÕES GLOBAIS - ATUALIZADO PARA NETLIFY ==========\
+  // ========== CONFIGURAÇÕES GLOBAIS - ATUALIZADO PARA NETLIFY ==========
   const REQUEST_ENDPOINT = "/.netlify/functions/gemini-proxy";
   const REQUEST_TIMEOUT = 15001;
 
-  // ========== FUNÇÕES AUXILIARES ==========\
+  // ========== FUNÇÕES AUXILIARES ==========
   function hideTypingIndicator() {
     const typingIndicator = document.querySelector(".joao-ia-typing");
     if (typingIndicator) {
@@ -66,7 +66,7 @@
 
   // ========== LÓGICA PRINCIPAL DO CHAT (MÓDULO JOAOIA) ==========
   const JOAOIA = {
-    // ========== CONFIGURAÇÃO PADRÃO ==========\
+    // ========== CONFIGURAÇÃO PADRÃO ==========
     config: {
       botName: getDataAttr("bot-name") || "João IA",
       initialSuggestions: [
@@ -75,19 +75,18 @@
         "Fale sobre a Capoeira e suas origens.",
       ],
       storageKey: "joaoIAHistory",
-      // O 'theme' foi removido permanentemente, fixando no modo claro via CSS
       avatarUrl: getDataAttr("avatar-url") || null,
       proxyUrl: getDataAttr("proxy-url") || REQUEST_ENDPOINT,
     },
 
-    // ========== ESTADO DO CHAT ==========\
+    // ========== ESTADO DO CHAT ==========
     isInitialized: false,
     isOpen: false,
     messages: [],
     isSending: false,
     elements: {},
 
-    // ========== RESPOSTAS RÁPIDAS (Fallback e Boas-vindas) ==========\
+    // ========== RESPOSTAS RÁPIDAS (Fallback e Boas-vindas) ==========
     botResponses: {
       oi: {
         text: `Olá! Eu sou ${getDataAttr("bot-name") || "João IA"}, seu assistente virtual especializado em história e cultura afro-brasileira. Como posso ajudar você hoje?`,
@@ -95,7 +94,7 @@
       },
     },
 
-    // ========== FUNÇÕES DE INICIALIZAÇÃO ==========\
+    // ========== FUNÇÕES DE INICIALIZAÇÃO ==========
     init: function () {
       if (this.isInitialized) return;
 
@@ -115,11 +114,11 @@
       
         const toggleContent = this.config.avatarUrl
             ? `<img src="${this.config.avatarUrl}" alt="Avatar" />`
-            : `<i class="fas fa-comment-dots"></i>`;
+            : `<div class="joao-ia-toggle-icon"></div>`;
 
         const profileContent = this.config.avatarUrl
             ? `<img src="${this.config.avatarUrl}" alt="Avatar" class="joao-ia-avatar-img">`
-            : `<i class="fas fa-robot"></i>`;
+            : `<div class="joao-ia-avatar-icon"></div>`;
 
 
         const container = document.createElement("div");
@@ -134,24 +133,32 @@
                         <div class="joao-ia-avatar">
                             ${profileContent}
                         </div>
-                        <h3>${this.config.botName}</h3>
+                        <div class="joao-ia-header-text">
+                            <h3>${this.config.botName}</h3>
+                            <div class="joao-ia-status">
+                                <div class="joao-ia-status-dot"></div>
+                                <span>Online</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="joao-ia-header-controls">
-                        <div class="joao-ia-header-icon joao-ia-clear-history" title="Limpar Histórico">
+                        <button class="joao-ia-header-btn joao-ia-clear-history" title="Limpar Histórico">
                             <i class="fas fa-trash-alt"></i>
-                        </div>
-                        <div class="joao-ia-header-icon joao-ia-close" title="Fechar Chat">
+                        </button>
+                        <button class="joao-ia-header-btn joao-ia-close" title="Fechar Chat">
                             <i class="fas fa-times"></i>
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <div class="joao-ia-messages">
                     </div>
                 <div class="joao-ia-suggestions">
                     </div>
-                <div class="joao-ia-footer">
+                <div class="joao-ia-input-area">
                     <input type="text" class="joao-ia-input" placeholder="Pergunte ao ${this.config.botName}..." />
-                    <button class="joao-ia-send" disabled><i class="fas fa-paper-plane"></i></button>
+                    <button class="joao-ia-send" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         `;
@@ -173,9 +180,7 @@
       this.renderSuggestions(this.config.initialSuggestions);
     },
 
-    // As funções applyTheme e toda lógica de tema foram removidas permanentemente.
-
-    // ========== FUNÇÕES DE MENSAGEM ==========\
+    // ========== FUNÇÕES DE MENSAGEM ==========
     addMessage: function (msg, save = true) {
       if (save) {
         this.messages.push(msg);
@@ -184,7 +189,19 @@
 
       const messageDiv = document.createElement("div");
       messageDiv.className = `joao-ia-message joao-ia-${msg.sender}`;
-      messageDiv.innerHTML = markdownToHtml(msg.text);
+      
+      // Adicionar conteúdo da mensagem
+      const messageContent = document.createElement("div");
+      messageContent.className = "joao-ia-message-content";
+      messageContent.innerHTML = markdownToHtml(msg.text);
+      messageDiv.appendChild(messageContent);
+      
+      // Adicionar timestamp
+      const timestamp = document.createElement("div");
+      timestamp.className = "joao-ia-timestamp";
+      timestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      messageDiv.appendChild(timestamp);
+      
       this.elements.messages.appendChild(messageDiv);
       
       this.scrollToBottom();
@@ -205,7 +222,7 @@
       }
     },
 
-    // ========== FUNÇÕES DE SUGESTÃO ==========\
+    // ========== FUNÇÕES DE SUGESTÃO ==========
     renderSuggestions: function (suggestions) {
       this.elements.suggestions.innerHTML = "";
       if (suggestions && suggestions.length > 0) {
@@ -228,7 +245,7 @@
       }
     },
 
-    // ========== HANDLERS DE EVENTOS E LÓGICA DE ENVIO ==========\
+    // ========== HANDLERS DE EVENTOS E LÓGICA DE ENVIO ==========
     handleUserSend: function () {
       const prompt = this.elements.input.value.trim();
       if (prompt === "" || this.isSending) return;
@@ -301,7 +318,6 @@
             return "Desculpe, houve um erro ao processar sua solicitação no servidor. Por favor, reformule a pergunta ou tente mais tarde.";
         }
 
-
         throw new Error("Resposta da API em formato inesperado.");
 
       } catch (error) {
@@ -314,7 +330,7 @@
       }
     },
 
-    // ========== PERSISTÊNCIA E EVENTOS ==========\
+    // ========== PERSISTÊNCIA E EVENTOS ==========
     loadHistory: function () {
       try {
         const history = localStorage.getItem(this.config.storageKey);
@@ -395,7 +411,7 @@
       alert("Histórico limpo com sucesso!");
     },
 
-    // ========== API PÚBLICA ==========\
+    // ========== API PÚBLICA ==========
     destroy: function () {
       if (this.elements.container?.parentNode) {
         this.elements.container.parentNode.removeChild(this.elements.container);
@@ -410,11 +426,10 @@
 
     updateConfig: function (newConfig) {
       Object.assign(this.config, newConfig);
-      // Lógica de tema foi removida permanentemente
     },
   };
 
-  // ========== INICIALIZAÇÃO AUTOMÁTICA ==========\
+  // ========== INICIALIZAÇÃO AUTOMÁTICA ==========
   if (getDataAttr("auto-init") !== "false") {
     document.addEventListener("DOMContentLoaded", () => {
       JOAOIA.init();

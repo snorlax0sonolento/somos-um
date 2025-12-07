@@ -1,32 +1,37 @@
-/* ========== MÓDULO JOÃO IA - DESIGN FIXO PERMANENTE MODO CLARO (v4.1 - Tema Absolutamente Removido) ========== */
+/* ========== MÓDULO JOÃO IA - DESIGN MODERNO (v4.2) ========== */
 :root {
-  --joao-primary: #a55734; /* Terracota/Vermelho Queimado */
+  --joao-primary: #a55734;
   --joao-primary-dark: #8c472a;
   --joao-secondary: #3498db;
   --joao-accent: #ff6b35;
   --joao-gold: #ffd700;
 
   /* Cores Padrão (FIXADAS em CLARO) */
-  --joao-bg: #ffffff; /* Fundo Sólido (Área de mensagens) */
-  --joao-surface: #ffffff; /* Superfície (Janela, sugestões) */
-  --joao-text: #2c3e50; /* Texto Escuro (Preto) */
-  --joao-border: rgba(0, 0, 0, 0.1); /* Borda Leve */
+  --joao-bg: #ffffff;
+  --joao-surface: rgba(255, 255, 255, 0.95);
+  --joao-text: #2c3e50;
+  --joao-text-secondary: #64748b;
+  --joao-border: rgba(0, 0, 0, 0.08);
   
-  /* Cores de Mensagens (Estilo Gradiente) */
-  --joao-user-bg-start: #8c472a; /* Cor inicial do gradiente (Primary Dark) */
-  --joao-user-bg-end: #a55734;   /* Cor final do gradiente (Primary) */
-  --joao-bot-bg: #f0f0f0;        /* Cinza Claro (Mantido para o Bot) */
-
-
-  --joao-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  --joao-border-radius: 24px;
-  --joao-border-radius-sm: 10px;
-  --joao-border-radius-lg: 30px;
+  /* Cores de Mensagens */
+  --joao-user-bg: linear-gradient(135deg, #8c472a, #a55734);
+  --joao-bot-bg: #f8fafc;
+  
+  /* Efeitos */
+  --joao-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  --joao-shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --joao-glow: 0 0 40px rgba(165, 87, 52, 0.2);
+  --joao-border-radius: 20px;
+  --joao-border-radius-sm: 12px;
+  --joao-border-radius-lg: 28px;
+  
+  /* Transições */
+  --joao-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==================== CONTAINER PRINCIPAL ==================== */
 .joao-ia-container {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   position: fixed;
   z-index: 9999;
   bottom: 30px;
@@ -37,68 +42,71 @@
 .joao-ia-toggle {
   width: 70px;
   height: 70px;
-  background-color: var(--joao-primary);
-  color: var(--joao-bg); /* Usa a cor de fundo do chat (branco) */
+  background: var(--joao-user-bg);
+  border: none;
   border-radius: 50%;
-  box-shadow: var(--joao-shadow);
+  box-shadow: var(--joao-shadow), var(--joao-glow);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out, background-color 0.2s;
-  overflow: hidden; 
+  transition: var(--joao-transition);
+  position: relative;
+  overflow: hidden;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
 .joao-ia-toggle:hover {
-  background-color: var(--joao-primary-dark);
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25), 0 0 60px rgba(165, 87, 52, 0.3);
 }
 
-.joao-ia-toggle i {
-  font-size: 2.2rem;
-  transition: transform 0.3s ease-in-out;
-}
 .joao-ia-toggle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
-.joao-ia-open .joao-ia-toggle {
-  transform: rotate(45deg);
-  background-color: var(--joao-primary-dark);
+.joao-ia-toggle-icon {
+  width: 32px;
+  height: 32px;
+  background: white;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'/%3E%3C/svg%3E");
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'/%3E%3C/svg%3E");
 }
-
-.joao-ia-open .joao-ia-toggle i {
-  transform: rotate(-45deg);
-}
-
 
 /* ==================== JANELA DO CHAT ==================== */
 .joao-ia-window {
   position: absolute;
-  bottom: 0;
+  bottom: 90px;
   right: 0;
-  width: 380px;
-  height: 500px;
+  width: 420px;
+  height: 600px;
+  max-height: 80vh;
   display: none;
   flex-direction: column;
-  background-color: var(--joao-surface); /* Usa a cor de superfície CLARA */
-  color: var(--joao-text); /* Usa a cor de texto ESCURA */
-  border: 1px solid var(--joao-border);
-  
+  background: var(--joao-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--joao-border-radius-lg);
-  box-shadow: var(--joao-shadow);
+  box-shadow: var(--joao-shadow), inset 1px 1px 0px rgba(255, 255, 255, 0.5);
   overflow: hidden;
   opacity: 0;
-  transform: scale(0.95) translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .joao-ia-open .joao-ia-window {
   display: flex;
   opacity: 1;
-  transform: scale(1) translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 /* ==================== HEADER ==================== */
@@ -106,40 +114,76 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 20px;
-  background-color: var(--joao-primary);
-  color: var(--joao-bg); /* Texto Branco */
+  padding: 20px;
+  background: linear-gradient(135deg, var(--joao-primary), var(--joao-primary-dark));
+  color: white;
   flex-shrink: 0;
 }
 
 .joao-ia-header-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
+
+.joao-ia-header-text {
+  display: flex;
+  flex-direction: column;
 }
 
 .joao-ia-header h3 {
   font-size: 1.3rem;
   font-weight: 700;
   margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.joao-ia-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.joao-ia-status-dot {
+  width: 6px;
+  height: 6px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .joao-ia-header-controls {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
-.joao-ia-header-icon {
+.joao-ia-header-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
   cursor: pointer;
-  font-size: 1.1rem;
-  padding: 5px;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-  color: var(--joao-bg); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: var(--joao-transition);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.joao-ia-header-icon:hover {
-  background-color: var(--joao-primary-dark);
+.joao-ia-header-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
 }
 
 /* ==================== AVATAR ==================== */
@@ -148,32 +192,40 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: var(--joao-gold); 
+  background: var(--joao-gold);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  flex-shrink: 0; 
+  flex-shrink: 0;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
+
 .joao-ia-avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.joao-ia-avatar i {
-  font-size: 1.5rem;
-  color: var(--joao-primary-dark);
+
+.joao-ia-avatar-icon {
+  width: 24px;
+  height: 24px;
+  background: var(--joao-primary-dark);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
 }
 
 /* ==================== MENSAGENS ==================== */
 .joao-ia-messages {
   flex-grow: 1;
-  padding: 10px 20px; 
+  padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px; 
-  background-color: var(--joao-bg); 
+  gap: 16px;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  min-height: 0;
   
   scrollbar-width: thin;
   scrollbar-color: var(--joao-primary) transparent;
@@ -184,7 +236,7 @@
 }
 
 .joao-ia-messages::-webkit-scrollbar-thumb {
-  background-color: var(--joao-primary);
+  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
   border-radius: 10px;
 }
 
@@ -192,110 +244,156 @@
   background: transparent;
 }
 
+/* Mensagem Base */
 .joao-ia-message {
   display: flex;
   flex-direction: column;
-  max-width: 85%; 
-  padding: 8px 10px;
-  border-radius: var(--joao-border-radius-sm);
+  max-width: 80%;
+  animation: messageAppear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Conteúdo da Mensagem */
+.joao-ia-message-content {
+  padding: 16px 20px;
+  border-radius: var(--joao-border-radius);
+  font-size: 0.95rem;
+  line-height: 1.6;
   word-wrap: break-word;
-  line-height: 1.4;
-  font-size: 0.95rem; 
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); 
-  position: relative; /* Essencial para o triângulo/balão */
+  box-shadow: var(--joao-shadow-sm);
+  position: relative;
 }
 
-/* Triângulo Genérico (Balão) */
-.joao-ia-message:after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border: 10px solid transparent;
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Mensagem do Usuário (Estilo Gradiente) */
+/* Mensagem do Usuário */
 .joao-ia-message.joao-ia-user {
   align-self: flex-end;
-  /* Aplica o Gradiente solicitado */
-  background: linear-gradient(135deg, var(--joao-user-bg-start), var(--joao-user-bg-end));
-  color: var(--joao-bg); /* Texto Branco */
-  /* Ajuste de Raio para balão */
-  border-top-right-radius: 4px; /* Canto superior direito mais suave */
-  border-bottom-right-radius: 4px; /* Canto inferior direito mais suave */
-  border-top-left-radius: var(--joao-border-radius-sm);
-  border-bottom-left-radius: var(--joao-border-radius-sm);
 }
 
-/* Triângulo do Usuário (Lado Direito) */
-.joao-ia-message.joao-ia-user:after {
-    border-top-color: var(--joao-user-bg-end); /* Cor da ponta deve ser a cor final do gradiente */
-    border-right-color: transparent;
-    border-left-color: transparent;
-    border-bottom-color: transparent;
-
-    right: -6px; /* Ajuste para encaixar no balão */
-    top: 0;
-    border-width: 5px; 
-    transform: rotate(45deg); /* Gira para a posição correta */
+.joao-ia-message.joao-ia-user .joao-ia-message-content {
+  background: var(--joao-user-bg);
+  color: white;
+  border-bottom-right-radius: 4px;
 }
 
+.joao-ia-message.joao-ia-user .joao-ia-message-content::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  top: 20px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-left-color: var(--joao-primary);
+  border-right: 0;
+}
 
-/* Mensagem do Bot (Estilo Claro) */
+/* Mensagem do Bot */
 .joao-ia-message.joao-ia-bot {
   align-self: flex-start;
-  background-color: var(--joao-bot-bg);
+}
+
+.joao-ia-message.joao-ia-bot .joao-ia-message-content {
+  background: var(--joao-bot-bg);
   color: var(--joao-text);
-  border: none;
-  /* Ajuste de Raio para balão */
-  border-top-left-radius: 4px; /* Canto superior esquerdo mais suave */
-  border-bottom-left-radius: 4px; /* Canto inferior esquerdo mais suave */
-  border-top-right-radius: var(--joao-border-radius-sm);
-  border-bottom-right-radius: var(--joao-border-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-bottom-left-radius: 4px;
 }
 
-/* Triângulo do Bot (Lado Esquerdo) */
-.joao-ia-message.joao-ia-bot:after {
-    border-top-color: var(--joao-bot-bg);
-    border-left-color: transparent;
-    border-right-color: transparent;
-    border-bottom-color: transparent;
-
-    left: -6px; /* Ajuste para encaixar no balão */
-    top: 0;
-    border-width: 5px;
-    transform: rotate(-45deg);
+.joao-ia-message.joao-ia-bot .joao-ia-message-content::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 20px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-right-color: var(--joao-bot-bg);
+  border-left: 0;
 }
 
-/* Estilização para o Markdown (dentro das mensagens) */
-.joao-ia-message p {
-  margin: 0;
-  margin-bottom: 5px;
+/* Timestamp */
+.joao-ia-timestamp {
+  font-size: 0.75rem;
+  color: var(--joao-text-secondary);
+  margin-top: 6px;
+  text-align: right;
 }
-/* No bot, o texto forte (strong) é escuro */
-.joao-ia-message.joao-ia-bot strong {
+
+.joao-ia-message.joao-ia-bot .joao-ia-timestamp {
+  text-align: left;
+}
+
+/* Estilização de Markdown */
+.joao-ia-message-content h2,
+.joao-ia-message-content h3,
+.joao-ia-message-content h4 {
+  margin: 0.5em 0;
   font-weight: 700;
-  color: var(--joao-primary-dark); 
-}
-/* No user (fundo gradiente), o texto forte (strong) é branco */
-.joao-ia-message.joao-ia-user strong {
-  font-weight: 700;
-  color: var(--joao-bg); 
 }
 
-/* ==================== SUGESTÕES DE PERGUNTAS ==================== */
+.joao-ia-message-content h2 { font-size: 1.2rem; color: inherit; }
+.joao-ia-message-content h3 { font-size: 1.1rem; color: inherit; }
+.joao-ia-message-content h4 { font-size: 1rem; color: inherit; }
+
+.joao-ia-message-content ul,
+.joao-ia-message-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.joao-ia-message-content li {
+  margin: 0.3em 0;
+}
+
+.joao-ia-message.joao-ia-bot .joao-ia-message-content strong {
+  color: var(--joao-primary-dark);
+  font-weight: 700;
+}
+
+.joao-ia-message.joao-ia-user .joao-ia-message-content strong {
+  color: white;
+  font-weight: 700;
+}
+
+/* ==================== SUGESTÕES ==================== */
 .joao-ia-suggestions {
-  display: none; 
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 20px;
+  display: none;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 16px 20px;
   border-top: 1px solid var(--joao-border);
-  background-color: var(--joao-surface);
-  max-height: 80px; 
-  overflow-y: auto;
-  flex-shrink: 0;
+  background: var(--joao-surface);
+  max-height: 80px;
+  min-height: 80px;
+  align-items: center;
+  
+  scrollbar-width: thin;
+  scrollbar-color: var(--joao-primary) transparent;
+}
+
+.joao-ia-suggestions::-webkit-scrollbar {
+  height: 4px;
+}
+
+.joao-ia-suggestions::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
+  border-radius: 2px;
+}
+
+.joao-ia-suggestions::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
 }
 
 .joao-ia-window.joao-ia-open .joao-ia-suggestions {
@@ -303,134 +401,213 @@
 }
 
 .joao-ia-suggestion-chip {
-  background-color: var(--joao-bot-bg);
-  color: var(--joao-text);
-  border: 1px solid var(--joao-border);
-  padding: 6px 12px;
-  border-radius: 20px;
+  background: rgba(165, 87, 52, 0.1);
+  color: var(--joao-primary);
+  border: 2px solid transparent;
+  padding: 10px 18px;
+  border-radius: 50px;
   cursor: pointer;
   font-size: 0.85rem;
-  transition: background-color 0.2s, transform 0.1s;
+  font-weight: 500;
   white-space: nowrap;
+  transition: var(--joao-transition);
+  flex-shrink: 0;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .joao-ia-suggestion-chip:hover {
-  background-color: var(--joao-primary);
-  color: var(--joao-bg);
+  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(165, 87, 52, 0.3);
   border-color: var(--joao-primary);
 }
 
-
-/* ==================== FOOTER / INPUT ==================== */
-.joao-ia-footer {
+/* ==================== ÁREA DE INPUT ==================== */
+.joao-ia-input-area {
   display: flex;
-  padding: 10px 15px;
+  padding: 20px;
   border-top: 1px solid var(--joao-border);
-  background-color: var(--joao-surface);
+  background: var(--joao-surface);
+  gap: 12px;
+  align-items: center;
   flex-shrink: 0;
 }
 
 .joao-ia-input {
   flex-grow: 1;
-  padding: 10px 15px;
-  border: 1px solid var(--joao-border);
-  border-radius: 25px; 
-  font-size: 1rem;
-  margin-right: 10px;
-  outline: none;
-  background-color: var(--joao-bg);
+  padding: 16px 24px;
+  border: 2px solid transparent;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.9);
   color: var(--joao-text);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--joao-transition);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .joao-ia-input:focus {
   border-color: var(--joao-primary);
-  box-shadow: 0 0 0 1px var(--joao-primary);
+  box-shadow: 0 8px 30px rgba(165, 87, 52, 0.2);
+  background: white;
+  transform: translateY(-2px);
+}
+
+.joao-ia-input::placeholder {
+  color: var(--joao-text-secondary);
 }
 
 .joao-ia-send {
-  background-color: var(--joao-primary);
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
+  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
+  border: none;
+  color: white;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.1rem;
-  transition: background-color 0.2s;
+  transition: var(--joao-transition);
+  box-shadow: 0 8px 25px rgba(165, 87, 52, 0.3);
   flex-shrink: 0;
 }
 
 .joao-ia-send:hover {
-  background-color: var(--joao-primary-dark);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(165, 87, 52, 0.4);
 }
 
 .joao-ia-send:disabled {
-  background-color: #ccc;
+  background: #cbd5e1;
+  transform: none;
+  box-shadow: none;
   cursor: not-allowed;
 }
-
 
 /* ==================== INDICADOR DE DIGITAÇÃO ==================== */
 .joao-ia-typing {
   display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  background: var(--joao-bot-bg);
+  border-radius: var(--joao-border-radius);
+  margin: 10px 0;
+  width: fit-content;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   align-self: flex-start;
-  gap: 4px;
-  padding: 10px 15px;
-  margin-bottom: 8px;
-  border-radius: var(--joao-border-radius-sm);
-  max-width: 80%;
-  background-color: var(--joao-bot-bg); /* Fundo de bot */
-  border-bottom-left-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); 
 }
 
 .joao-ia-typing-dot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--joao-primary);
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, var(--joao-primary), var(--joao-accent));
   border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out both;
+  animation: typingBounce 1.4s infinite ease-in-out both;
 }
 
-.joao-ia-typing-dot:nth-child(1) {
-  animation-delay: -0.32s;
+.joao-ia-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.joao-ia-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.joao-ia-typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+  40% { transform: scale(1.2); opacity: 1; }
 }
 
-.joao-ia-typing-dot:nth-child(2) {
-  animation-delay: -0.16s;
+/* ==================== POSIÇÕES ALTERNATIVAS ==================== */
+.joao-ia-position-bottom-left {
+  right: auto;
+  left: 30px;
 }
 
-@keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(1);
-  }
+.joao-ia-position-bottom-left .joao-ia-window {
+  right: auto;
+  left: 0;
 }
 
-/* ==================== MEDIA QUERIES (RESPONSIVIDADE) ==================== */
+.joao-ia-position-top-right {
+  bottom: auto;
+  top: 30px;
+  right: 30px;
+}
+
+.joao-ia-position-top-right .joao-ia-window {
+  bottom: auto;
+  top: 90px;
+}
+
+.joao-ia-position-top-left {
+  bottom: auto;
+  top: 30px;
+  right: auto;
+  left: 30px;
+}
+
+.joao-ia-position-top-left .joao-ia-window {
+  bottom: auto;
+  top: 90px;
+  right: auto;
+  left: 0;
+}
+
+/* ==================== RESPONSIVIDADE ==================== */
 @media (max-width: 768px) {
   .joao-ia-container {
     bottom: 20px;
     right: 20px;
   }
+  
+  .joao-ia-position-bottom-left {
+    left: 20px;
+  }
+  
+  .joao-ia-position-top-right {
+    top: 20px;
+    right: 20px;
+  }
+  
+  .joao-ia-position-top-left {
+    top: 20px;
+    left: 20px;
+  }
 
   .joao-ia-window {
-    width: 90vw;
-    height: 75vh;
-    max-width: none;
+    width: calc(100vw - 40px);
+    height: 70vh;
     right: 0;
     left: 0;
     margin: 0 auto;
     bottom: 90px;
-    border-radius: var(--joao-border-radius-sm);
+  }
+  
+  .joao-ia-position-bottom-left .joao-ia-window,
+  .joao-ia-position-top-left .joao-ia-window {
+    left: 0;
+    right: auto;
+  }
+  
+  .joao-ia-position-top-right .joao-ia-window,
+  .joao-ia-position-top-left .joao-ia-window {
+    bottom: auto;
+    top: 90px;
   }
 
   .joao-ia-toggle {
-    width: 65px;
-    height: 65px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .joao-ia-header {
+    padding: 16px;
   }
 
   .joao-ia-header h3 {
@@ -443,28 +620,100 @@
     height: 40px;
   }
 
+  .joao-ia-messages {
+    padding: 16px;
+  }
+
   .joao-ia-message {
     max-width: 90%;
-    padding: 10px 12px;
+  }
+
+  .joao-ia-message-content {
+    padding: 14px 18px;
     font-size: 0.9rem;
   }
 
   .joao-ia-suggestions {
-    padding: 10px 15px;
-    max-height: 60px; 
-    min-height: 60px;
+    padding: 14px 16px;
+    max-height: 70px;
+    min-height: 70px;
   }
 
   .joao-ia-suggestion-chip {
-    padding: 8px 15px;
+    padding: 8px 16px;
     font-size: 0.8rem;
+  }
+
+  .joao-ia-input-area {
+    padding: 16px;
+  }
+
+  .joao-ia-input {
+    padding: 14px 20px;
+    font-size: 0.9rem;
+  }
+
+  .joao-ia-send {
+    width: 46px;
+    height: 46px;
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .joao-ia-window {
-    height: 85vh;
-    bottom: 85px;
-    border-radius: var(--joao-border-radius-sm);
+    height: 80vh;
+    bottom: 80px;
+    border-radius: 20px;
+  }
+  
+  .joao-ia-position-top-right .joao-ia-window,
+  .joao-ia-position-top-left .joao-ia-window {
+    top: 80px;
+  }
+
+  .joao-ia-toggle {
+    width: 56px;
+    height: 56px;
+  }
+
+  .joao-ia-header {
+    padding: 14px;
+  }
+
+  .joao-ia-messages {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .joao-ia-message-content {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+  }
+
+  .joao-ia-suggestions {
+    padding: 12px 14px;
+    max-height: 65px;
+    min-height: 65px;
+  }
+
+  .joao-ia-suggestion-chip {
+    padding: 7px 14px;
+    font-size: 0.75rem;
+  }
+
+  .joao-ia-input-area {
+    padding: 14px;
+  }
+
+  .joao-ia-input {
+    padding: 12px 18px;
+    font-size: 0.85rem;
+  }
+
+  .joao-ia-send {
+    width: 44px;
+    height: 44px;
+    font-size: 0.9rem;
   }
 }
